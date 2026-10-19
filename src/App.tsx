@@ -1,59 +1,81 @@
-import { useState } from 'react';
-import { BackgroundCanvas } from './components/3d/BackgroundCanvas';
+import { useCallback, useState } from 'react';
+import { AnimatePresence, MotionConfig } from 'framer-motion';
 import { CustomCursor } from './components/Cursor/CustomCursor';
 import { IntroScreen } from './components/Intro/IntroScreen';
 import { Navbar } from './components/Navbar/Navbar';
 import { Hero } from './components/Hero/Hero';
+import { TechMarquee } from './components/Marquee/TechMarquee';
 import { About } from './components/About/About';
+import { TechnicalFocus } from './components/Focus/TechnicalFocus';
 import { Skills } from './components/Skills/Skills';
 import { Projects } from './components/Projects/Projects';
 import { Experience } from './components/Experience/Experience';
 import { Education } from './components/Education/Education';
 import { Certifications } from './components/Certifications/Certifications';
-import { CurrentlyBuilding } from './components/Creative/CurrentlyBuilding';
 import { Contact } from './components/Contact/Contact';
 import { Footer } from './components/Footer/Footer';
+import { sectionIds } from './data/portfolio';
 import { useScrollProgress } from './hooks/useScrollProgress';
 
-export function App() {
-  const [introFinished, setIntroFinished] = useState(() => {
-    return sessionStorage.getItem('vs_intro_seen') === 'true';
-  });
+const INTRO_KEY = 'vs_intro_seen';
 
-  const { scrollProgress, activeSection } = useScrollProgress();
+/** Show the intro once per browser session, and never over a deep link. */
+function shouldShowIntro(): boolean {
+  if (window.location.hash) return false;
+  try {
+    return sessionStorage.getItem(INTRO_KEY) !== 'true';
+  } catch {
+    return true;
+  }
+}
+
+export function App() {
+  const [introOpen, setIntroOpen] = useState(shouldShowIntro);
+  const [introSkipped, setIntroSkipped] = useState(false);
+  const { progress, activeSection } = useScrollProgress(sectionIds);
+
+  const finishIntro = useCallback((skipped: boolean) => {
+    try {
+      sessionStorage.setItem(INTRO_KEY, 'true');
+    } catch {
+      // Storage can be unavailable (private mode); the intro just shows again next visit.
+    }
+    setIntroSkipped(skipped);
+    setIntroOpen(false);
+  }, []);
 
   return (
-    <div className="min-h-screen bg-[#050505] text-[#F5F5F5] selection:bg-blue-600/30 selection:text-blue-200 relative overflow-x-hidden font-sans">
-      {/* Interactive Custom Cursor on Desktop */}
+    <MotionConfig reducedMotion="user">
+      <a
+        href="#main"
+        className="label-mono fixed left-4 top-4 z-[70] -translate-y-24 rounded-full bg-mist px-4 py-3 text-ink transition-transform focus:translate-y-0"
+      >
+        Skip to content
+      </a>
+
       <CustomCursor />
 
-      {/* Ambient Neural Particle Background */}
-      <BackgroundCanvas />
+      <AnimatePresence custom={introSkipped}>
+        {introOpen && <IntroScreen onFinish={finishIntro} />}
+      </AnimatePresence>
 
-      {/* Landing Intro Modal (if not yet entered) */}
-      {!introFinished && (
-        <IntroScreen onEnter={() => setIntroFinished(true)} />
-      )}
-
-      {/* Fixed Navigation Bar */}
-      <Navbar activeSection={activeSection} scrollProgress={scrollProgress} />
-
-      {/* Main Sections */}
-      <main className="relative z-10">
-        <Hero />
-        <About />
-        <Skills />
-        <Projects />
-        <Experience />
-        <Education />
-        <Certifications />
-        <CurrentlyBuilding />
-        <Contact />
-      </main>
-
-      {/* Footer */}
-      <Footer />
-    </div>
+      <div className="relative min-h-screen overflow-x-clip bg-ink text-mist" inert={introOpen}>
+        <Navbar activeSection={activeSection} progress={progress} ready={!introOpen} />
+        <main id="main">
+          <Hero ready={!introOpen} />
+          <TechMarquee />
+          <About />
+          <TechnicalFocus />
+          <Skills />
+          <Projects />
+          <Experience />
+          <Education />
+          <Certifications />
+          <Contact />
+        </main>
+        <Footer />
+      </div>
+    </MotionConfig>
   );
 }
 

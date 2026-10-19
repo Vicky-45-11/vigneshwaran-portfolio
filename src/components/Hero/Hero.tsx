@@ -1,152 +1,82 @@
-import React from 'react';
 import { motion } from 'framer-motion';
-import { ArrowRight, Mail, Code2, Sparkles } from 'lucide-react';
-import { PORTFOLIO_DATA } from '../../data/portfolio';
+import { ArrowDown } from 'lucide-react';
 import { NeuralOrb } from '../3d/NeuralOrb';
-import { HeroCards } from './HeroCards';
-import { GithubIcon } from '../icons/GithubIcon';
+import { EASE_EDITORIAL } from '../animations/easing';
+import { ContactButton } from '../ui/ContactButton';
+import { personal } from '../../data/portfolio';
+import { useReducedMotion } from '../../hooks/useReducedMotion';
 
-export const Hero: React.FC = () => {
+interface HeroProps {
+  /** Hold the entrance animation until the intro has closed. */
+  ready: boolean;
+}
+
+export function Hero({ ready }: HeroProps) {
+  const reducedMotion = useReducedMotion();
+  const distance = reducedMotion ? 0 : 1;
+
+  const enter = (delay: number, y = 40) => ({
+    initial: { opacity: 0, y: y * distance },
+    animate: ready ? { opacity: 1, y: 0 } : undefined,
+    transition: { duration: reducedMotion ? 0.2 : 0.9, delay: reducedMotion ? 0 : delay, ease: EASE_EDITORIAL },
+  });
+
   return (
-    <section
-      id="hero"
-      className="relative min-h-screen pt-32 pb-20 flex flex-col justify-center overflow-hidden"
-    >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full relative z-10">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center">
-          {/* Left Column: Hero Typography & Actions (7 cols) */}
-          <div className="lg:col-span-7 flex flex-col items-start text-left">
-            {/* Metadata Badges */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5 }}
-              className="flex flex-wrap items-center gap-3 mb-6"
-            >
-              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/[0.04] border border-white/[0.08] backdrop-blur-md">
-                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse shadow-sm shadow-emerald-500" />
-                <span className="text-xs font-mono tracking-wider text-emerald-400">
-                  {PORTFOLIO_DATA.personal.status}
-                </span>
-              </div>
+    <section id="hero" aria-labelledby="hero-title" className="relative isolate flex min-h-[100svh] flex-col overflow-hidden pt-24 sm:pt-28">
+      <div className="grid-lines pointer-events-none absolute inset-0 -z-10 opacity-50" aria-hidden="true" />
+      <div
+        className="pointer-events-none absolute -right-[20%] top-[8%] -z-10 h-[70vmax] w-[70vmax] rounded-full bg-[radial-gradient(circle,rgba(59,130,246,0.16),transparent_60%)]"
+        aria-hidden="true"
+      />
 
-              <div className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-blue-500/10 border border-blue-500/25 text-blue-400 text-xs font-mono">
-                <Sparkles size={12} />
-                <span>{PORTFOLIO_DATA.personal.educationMeta}</span>
-              </div>
-            </motion.div>
-
-            {/* Main Heading */}
-            <motion.div
-              initial={{ opacity: 0, y: 24 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.1 }}
-              className="w-full"
-            >
-              <h1 className="text-4xl sm:text-6xl md:text-7xl xl:text-8xl font-black tracking-tight text-[#F5F5F5] leading-[1.05] uppercase">
-                <span className="block text-[#A1A1AA] text-2xl sm:text-3xl md:text-4xl font-mono font-medium tracking-normal mb-1">
-                  Hi, I'm
-                </span>
-                <span className="bg-gradient-to-r from-white via-[#F5F5F5] to-[#A1A1AA] bg-clip-text text-transparent">
-                  Vigneshwaran S
-                </span>
-              </h1>
-            </motion.div>
-
-            {/* Supporting Subtitle */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.2 }}
-              className="mt-4 flex items-center gap-3"
-            >
-              <div className="w-8 h-[2px] bg-blue-500" />
-              <h2 className="text-lg sm:text-xl md:text-2xl font-mono font-semibold tracking-wider text-blue-400 uppercase">
-                {PORTFOLIO_DATA.personal.role}
-              </h2>
-            </motion.div>
-
-            {/* Concise Resume Profile */}
-            <motion.p
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.3 }}
-              className="mt-6 text-base sm:text-lg text-[#A1A1AA] max-w-2xl leading-relaxed font-sans"
-            >
-              {PORTFOLIO_DATA.personal.heroIntro}
-            </motion.p>
-
-            {/* CTA Buttons */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.4 }}
-              className="mt-8 flex flex-wrap items-center gap-4"
-            >
-              <a
-                href="#projects"
-                className="inline-flex items-center gap-2.5 px-6 py-3.5 rounded-full bg-blue-600 hover:bg-blue-500 text-white font-medium text-sm tracking-wide shadow-lg shadow-blue-600/25 transition-all duration-200 hover:scale-[1.02] active:scale-[0.98]"
-              >
-                <Code2 size={16} />
-                <span>VIEW PROJECTS</span>
-                <ArrowRight size={15} />
-              </a>
-
-              <a
-                href={PORTFOLIO_DATA.personal.github}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 px-5 py-3.5 rounded-full border border-white/10 hover:border-white/20 bg-white/[0.03] hover:bg-white/[0.06] text-[#F5F5F5] font-mono text-xs tracking-wider uppercase transition-all duration-200"
-              >
-                <GithubIcon size={16} />
-                <span>GITHUB</span>
-              </a>
-
-              <a
-                href="#contact"
-                className="inline-flex items-center gap-2 px-5 py-3.5 rounded-full border border-blue-500/25 hover:border-blue-500/50 bg-blue-950/20 text-blue-300 font-medium text-xs tracking-wider uppercase transition-all duration-200"
-              >
-                <Mail size={15} />
-                <span>CONTACT ME</span>
-              </a>
-            </motion.div>
-          </div>
-
-          {/* Right Column: 3D AI Core (5 cols) */}
-          <div className="lg:col-span-5 flex flex-col items-center justify-center relative">
-            <div className="relative w-full aspect-square max-w-[420px] mx-auto flex items-center justify-center">
-              {/* Radial background aura */}
-              <div className="absolute inset-0 rounded-full bg-gradient-to-br from-blue-600/15 via-cyan-500/10 to-transparent blur-3xl pointer-events-none" />
-
-              {/* Decorative Tech Rings */}
-              <div className="absolute inset-6 rounded-full border border-dashed border-white/[0.06] animate-spin-slow pointer-events-none" />
-              <div className="absolute inset-16 rounded-full border border-white/[0.04] pointer-events-none" />
-
-              {/* 3D Neural Orb */}
-              <NeuralOrb className="w-full h-full" />
-
-              {/* Technical floating badges */}
-              <div className="absolute bottom-4 left-0 px-3 py-1.5 rounded-lg bg-[#111111]/90 border border-white/[0.08] backdrop-blur-md shadow-lg pointer-events-none">
-                <div className="flex items-center gap-2">
-                  <span className="w-1.5 h-1.5 rounded-full bg-blue-400" />
-                  <span className="text-[10px] font-mono text-[#A1A1AA] tracking-wider">
-                    AI CORE • NEURAL GRAPH
-                  </span>
-                </div>
-              </div>
-
-              <div className="absolute top-4 right-0 px-3 py-1.5 rounded-lg bg-[#111111]/90 border border-white/[0.08] backdrop-blur-md shadow-lg pointer-events-none">
-                <span className="text-[10px] font-mono text-cyan-400 tracking-wider">
-                  SRMIST CHENNAI
-                </span>
-              </div>
-            </div>
-          </div>
+      <motion.div
+        className="pointer-events-none absolute -z-[5] aspect-square w-[min(92vw,420px)] bottom-[16%] right-[-24%] sm:bottom-auto sm:right-[-6%] sm:top-[6%] sm:w-[min(70vw,560px)] lg:right-[4%] lg:top-[8%] lg:w-[min(46vw,720px)]"
+        initial={{ opacity: 0, y: 30 * distance, scale: reducedMotion ? 1 : 0.94 }}
+        animate={ready ? { opacity: 1, y: 0, scale: 1 } : undefined}
+        transition={{ duration: reducedMotion ? 0.2 : 1.4, delay: reducedMotion ? 0 : 0.35, ease: EASE_EDITORIAL }}
+      >
+        <div className={reducedMotion ? 'h-full w-full' : 'animate-float h-full w-full'}>
+          <NeuralOrb className="h-full w-full" />
         </div>
+      </motion.div>
 
-        {/* Hero Information Highlights */}
-        <HeroCards />
+      <div className="container-editorial flex flex-1 flex-col">
+        <motion.p {...enter(0.1, 16)} className="label-mono mt-6 text-mist-muted sm:mt-10">
+          <span className="text-accent-light">●</span>&nbsp;&nbsp;{personal.headline} — {personal.location}
+        </motion.p>
+
+        <motion.h1
+          id="hero-title"
+          {...enter(0.2)}
+          className="hero-heading mt-6 text-[clamp(2.5rem,11.4vw,15rem)] font-black uppercase leading-[0.86] tracking-[-0.045em] sm:mt-8"
+        >
+          <span className="block">Hi, I'm</span>
+          <span className="block">{personal.firstName}</span>
+        </motion.h1>
+
+        <motion.p {...enter(0.4, 24)} className="mt-8 max-w-xl text-lg leading-relaxed text-mist sm:text-xl">
+          {personal.heroCopy}
+        </motion.p>
+        <motion.p {...enter(0.5, 24)} className="mt-3 max-w-xl text-sm text-mist-muted">
+          {personal.supportingHeadline}
+        </motion.p>
+
+        <div className="mt-auto flex flex-col gap-8 border-t border-line pb-8 pt-8 sm:flex-row sm:items-center sm:justify-between sm:pb-10">
+          <motion.div {...enter(0.6, 16)} className="flex items-center gap-4">
+            <a
+              href="#stack"
+              className="flex h-11 w-11 items-center justify-center rounded-full border border-white/15 text-mist transition-colors hover:border-white/40"
+              aria-label="Scroll to the technology section"
+            >
+              <ArrowDown size={18} aria-hidden="true" />
+            </a>
+            <span className="label-mono text-mist">{personal.heroMeta}</span>
+          </motion.div>
+          <motion.div {...enter(0.7, 24)}>
+            <ContactButton />
+          </motion.div>
+        </div>
       </div>
     </section>
   );
-};
+}

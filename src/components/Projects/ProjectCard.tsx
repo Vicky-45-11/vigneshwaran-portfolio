@@ -1,0 +1,99 @@
+import type { ComponentType } from 'react';
+import { motion, useTransform, type MotionValue } from 'framer-motion';
+import { GithubIcon } from '../icons/GithubIcon';
+import { LiveProjectButton } from '../ui/LiveProjectButton';
+import { personal, type Project, type ProjectVisual } from '../../data/portfolio';
+import { TextDetectorVisual } from './visuals/TextDetectorVisual';
+import { CampusNetworkVisual } from './visuals/CampusNetworkVisual';
+import { MusicPlayerVisual } from './visuals/MusicPlayerVisual';
+
+const VISUALS: Record<ProjectVisual, { Component: ComponentType; caption: string }> = {
+  'ai-text-detector': {
+    Component: TextDetectorVisual,
+    caption: 'Illustration of text being tokenized, scanned for patterns and classified as human-written or AI-generated.',
+  },
+  'campus-connect': {
+    Component: CampusNetworkVisual,
+    caption: 'Illustration of a network linking students with shared interests, skills and projects.',
+  },
+  'spotify-clone': {
+    Component: MusicPlayerVisual,
+    caption: 'Illustration of a music interface with search, album grid and playback bar, using original abstract artwork.',
+  },
+};
+
+interface ProjectCardProps {
+  project: Project;
+  index: number;
+  total: number;
+  /** Scroll progress through the whole stack (0–1). */
+  progress: MotionValue<number>;
+  /** Sticky stacking + scale only on large screens with motion allowed. */
+  stacked: boolean;
+}
+
+export function ProjectCard({ project, index, total, progress, stacked }: ProjectCardProps) {
+  // Each card shrinks a little as the cards after it slide over it.
+  const targetScale = 1 - (total - 1 - index) * 0.05;
+  const scale = useTransform(progress, [index / total, 1], [1, targetScale]);
+  const { Component: Visual, caption } = VISUALS[project.visual];
+
+  return (
+    <div
+      className={stacked ? 'sticky flex h-[100svh] items-center' : 'py-3'}
+      style={stacked ? { top: `${index * 28}px` } : undefined}
+    >
+      <motion.article
+        aria-labelledby={`${project.id}-title`}
+        style={stacked ? { scale, transformOrigin: 'top center' } : undefined}
+        className="relative w-full overflow-hidden rounded-[2rem] border border-line bg-ink-800 p-5 shadow-[0_-20px_60px_-20px_rgba(0,0,0,0.8)] sm:rounded-[2.5rem] sm:p-8 lg:h-[min(78svh,680px)] lg:p-10"
+      >
+        <div className="grid h-full gap-8 lg:grid-cols-[minmax(0,5fr)_minmax(0,6fr)] lg:gap-12">
+          <div className="flex flex-col">
+            <div className="flex items-start justify-between gap-4">
+              <span className="hero-heading font-mono text-[clamp(4rem,10vw,8.5rem)] font-medium leading-[0.8] tracking-tighter">
+                {project.number}
+              </span>
+              <span className="label-mono rounded-full border border-line px-3 py-1.5 text-[0.625rem] text-accent-light">
+                {project.category}
+              </span>
+            </div>
+
+            <h3 id={`${project.id}-title`} className="mt-8 text-[clamp(2rem,4.4vw,3.75rem)] font-black uppercase leading-[0.92] tracking-tight text-mist">
+              {project.title}
+            </h3>
+            <p className="mt-5 max-w-lg text-base leading-relaxed text-mist-muted">{project.description}</p>
+
+            {project.technologies.length > 0 && (
+              <ul className="mt-6 flex flex-wrap gap-2" aria-label="Technologies">
+                {project.technologies.map((tech) => (
+                  <li key={tech} className="label-mono rounded-full bg-white/[0.05] px-3 py-1.5 text-[0.625rem] text-mist">
+                    {tech}
+                  </li>
+                ))}
+              </ul>
+            )}
+
+            <div className="mt-8 flex flex-wrap gap-3 lg:mt-auto lg:pt-8">
+              {project.sourceUrl ? (
+                <LiveProjectButton href={project.sourceUrl} label="SOURCE CODE" icon={<GithubIcon size={14} />} />
+              ) : (
+                // No repository link has been published for this project yet,
+                // so point to the GitHub profile and say so plainly.
+                <LiveProjectButton href={personal.github} label="GITHUB PROFILE" icon={<GithubIcon size={14} />} />
+              )}
+              {project.liveUrl && <LiveProjectButton href={project.liveUrl} label="LIVE PROJECT" />}
+            </div>
+          </div>
+
+          <figure className="relative min-h-[18rem] sm:min-h-[22rem] lg:min-h-0">
+            <div className="absolute inset-0" aria-hidden="true">
+              <Visual />
+            </div>
+            <figcaption className="sr-only">{caption}</figcaption>
+          </figure>
+        </div>
+      </motion.article>
+    </div>
+  );
+}

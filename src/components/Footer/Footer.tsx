@@ -1,59 +1,66 @@
-import React from 'react';
 import { ArrowUp } from 'lucide-react';
-import { PORTFOLIO_DATA } from '../../data/portfolio';
-import { MiniNeuralOrb } from '../3d/MiniNeuralOrb';
+import { navLinks, personal } from '../../data/portfolio';
 import { GithubIcon } from '../icons/GithubIcon';
 
-export const Footer: React.FC = () => {
-  const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
+export function Footer() {
+  const year = new Date().getFullYear();
 
   return (
-    <footer className="py-12 border-t border-white/[0.08] relative z-10 bg-[#050505]">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex flex-col md:flex-row items-center justify-between gap-6">
-          {/* Left: Branding & Orb */}
-          <div className="flex items-center gap-4">
-            <MiniNeuralOrb size={36} />
-            <div>
-              <div className="font-bold text-sm tracking-wide text-[#F5F5F5]">
-                {PORTFOLIO_DATA.personal.name}
-              </div>
-              <div className="text-[11px] font-mono text-[#71717A] tracking-wider">
-                {PORTFOLIO_DATA.personal.role} • {PORTFOLIO_DATA.personal.location}
-              </div>
-            </div>
+    <footer className="relative overflow-hidden border-t border-line pt-16">
+      <div className="container-editorial">
+        <div className="grid gap-10 md:grid-cols-12">
+          <div className="md:col-span-5">
+            <p className="font-mono text-sm font-semibold tracking-[0.12em] text-mist">
+              VIGNESHWARAN<span className="text-accent-light">.DEV</span>
+            </p>
+            <p className="mt-3 max-w-xs text-sm leading-relaxed text-mist-muted">
+              {personal.headline} · {personal.location}
+            </p>
           </div>
 
-          {/* Center: Copyright */}
-          <div className="text-xs font-mono text-[#71717A]">
-            © 2026 {PORTFOLIO_DATA.personal.name}. All rights reserved.
-          </div>
+          <nav aria-label="Footer" className="md:col-span-4">
+            <ul className="grid grid-cols-2 gap-x-6 gap-y-1">
+              {navLinks.map((link) => (
+                <li key={link.id}>
+                  <a href={`#${link.id}`} className="label-mono inline-block py-2 text-mist-muted transition-colors hover:text-mist">
+                    {link.label}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </nav>
 
-          {/* Right: GitHub & Back to top */}
-          <div className="flex items-center gap-4">
+          <div className="flex items-start gap-3 md:col-span-3 md:justify-end">
             <a
-              href={PORTFOLIO_DATA.personal.github}
+              href={personal.github}
               target="_blank"
               rel="noopener noreferrer"
-              className="p-2 rounded-lg text-[#A1A1AA] hover:text-white hover:bg-white/5 transition-colors"
-              aria-label="GitHub Profile"
+              className="flex h-11 w-11 items-center justify-center rounded-full border border-line text-mist-muted transition-colors hover:border-line-strong hover:text-mist"
+              aria-label="GitHub profile (opens in a new tab)"
             >
               <GithubIcon size={18} />
             </a>
-
-            <button
-              onClick={scrollToTop}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-white/10 hover:border-white/20 bg-white/[0.03] text-xs font-mono text-[#A1A1AA] hover:text-white transition-colors"
-              aria-label="Back to top"
+            <a
+              href="#hero"
+              className="label-mono inline-flex h-11 items-center gap-2 rounded-full border border-line px-4 text-mist-muted transition-colors hover:border-line-strong hover:text-mist"
             >
-              <span>TOP</span>
-              <ArrowUp size={13} />
-            </button>
+              Back to top <ArrowUp size={14} aria-hidden="true" />
+            </a>
           </div>
+        </div>
+
+        <p
+          className="hero-heading pointer-events-none mt-16 select-none text-center text-[clamp(2.5rem,11.4vw,15rem)] font-black uppercase leading-[0.8] tracking-[-0.05em] opacity-60"
+          aria-hidden="true"
+        >
+          {personal.firstName}
+        </p>
+
+        <div className="flex flex-col gap-2 border-t border-line py-6 sm:flex-row sm:justify-between">
+          <p className="label-mono text-mist-dim">© {year} {personal.name}</p>
+          <p className="label-mono text-mist-dim">Built with React, Three.js &amp; Framer Motion</p>
         </div>
       </div>
     </footer>
   );
-};
+}

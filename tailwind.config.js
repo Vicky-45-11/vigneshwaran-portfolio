@@ -7,40 +7,36 @@ export default {
   theme: {
     extend: {
       colors: {
-        bg: {
-          primary: '#050505',
-          secondary: '#0B0B0B',
-          surface: '#111111',
-          elevated: '#171717',
+        ink: {
+          DEFAULT: '#0C0C0C',
+          900: '#0C0C0C',
+          800: '#111111',
+          700: '#171717',
+          600: '#1F1F1F',
         },
-        border: {
-          subtle: 'rgba(255, 255, 255, 0.08)',
-          glow: 'rgba(59, 130, 246, 0.3)',
+        mist: {
+          DEFAULT: '#D7E2EA',
+          muted: '#9CA3AF',
+          dim: '#646973',
         },
         accent: {
           DEFAULT: '#3B82F6',
           light: '#60A5FA',
           cyan: '#22D3EE',
+          deep: '#0B1F3A',
         },
-        text: {
-          primary: '#F5F5F5',
-          secondary: '#A1A1AA',
-          muted: '#71717A',
-        }
+        line: {
+          DEFAULT: 'rgba(215, 226, 234, 0.1)',
+          strong: 'rgba(215, 226, 234, 0.2)',
+        },
       },
       fontFamily: {
-        sans: ['Geist', 'Plus Jakarta Sans', 'Inter', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
-        mono: ['JetBrains Mono', 'Fira Code', 'monospace'],
+        sans: ['Geist', 'Inter', 'ui-sans-serif', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
+        mono: ['"JetBrains Mono"', 'ui-monospace', 'SFMono-Regular', 'Menlo', 'monospace'],
       },
-      animation: {
-        'pulse-subtle': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
-        'spin-slow': 'spin 20s linear infinite',
+      transitionTimingFunction: {
+        editorial: 'cubic-bezier(0.25, 0.1, 0.25, 1)',
       },
-      boxShadow: {
-        'glow-sm': '0 0 15px rgba(59, 130, 246, 0.2)',
-        'glow-md': '0 0 30px rgba(59, 130, 246, 0.3)',
-        'glow-lg': '0 0 50px rgba(59, 130, 246, 0.4)',
-      }
     },
   },
   plugins: [],

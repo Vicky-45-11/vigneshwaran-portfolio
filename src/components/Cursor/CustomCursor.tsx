@@ -1,93 +1,61 @@
-import React, { useEffect, useState } from 'react';
-import { motion } from 'framer-motion';
-import { useMousePosition } from '../../hooks/useMousePosition';
+import { useEffect, useState } from 'react';
+import { motion, useSpring } from 'framer-motion';
+import { useFinePointer, useMousePosition } from '../../hooks/useMousePosition';
 import { useReducedMotion } from '../../hooks/useReducedMotion';
 
-export const CustomCursor: React.FC = () => {
-  const { x, y, isPointerDevice } = useMousePosition();
-  const prefersReducedMotion = useReducedMotion();
-  const [cursorState, setCursorState] = useState<{
-    text: string;
-    variant: 'default' | 'hover' | 'project';
-  }>({
-    text: '',
-    variant: 'default',
-  });
+/**
+ * Desktop-only cursor ring that grows over interactive elements. Position is
+ * driven by motion values, so moving the mouse never re-renders React.
+ */
+export function CustomCursor() {
+  const finePointer = useFinePointer();
+  const reducedMotion = useReducedMotion();
+  const enabled = finePointer && !reducedMotion;
+  const { x, y } = useMousePosition(enabled);
+  const springX = useSpring(x, { stiffness: 500, damping: 40, mass: 0.4 });
+  const springY = useSpring(y, { stiffness: 500, damping: 40, mass: 0.4 });
+  const [hovering, setHovering] = useState(false);
+  const [visible, setVisible] = useState(false);
 
   useEffect(() => {
-    if (!isPointerDevice || prefersReducedMotion) return;
+    if (!enabled) return;
+    const root = document.documentElement;
+    root.classList.add('has-custom-cursor');
 
-    const handleMouseOver = (e: MouseEvent) => {
-      const target = e.target as HTMLElement | null;
-      if (!target) return;
-
-      const interactive = target.closest('[data-cursor]');
-      if (interactive) {
-        const cursorType = interactive.getAttribute('data-cursor') || 'hover';
-        const cursorLabel = interactive.getAttribute('data-cursor-text') || '';
-        setCursorState({
-          text: cursorLabel,
-          variant: cursorType as any,
-        });
-        return;
-      }
-
-      const isClickable = target.closest('a, button, [role="button"]');
-      if (isClickable) {
-        setCursorState({
-          text: '',
-          variant: 'hover',
-        });
-        return;
-      }
-
-      setCursorState({ text: '', variant: 'default' });
+    const onOver = (e: PointerEvent) => {
+      const target = e.target as Element | null;
+      setHovering(Boolean(target?.closest('a, button, [role="button"], input, textarea, label')));
+      setVisible(true);
     };
+    const onLeave = () => setVisible(false);
 
-    window.addEventListener('mouseover', handleMouseOver);
-    return () => window.removeEventListener('mouseover', handleMouseOver);
-  }, [isPointerDevice, prefersReducedMotion]);
+    window.addEventListener('pointerover', onOver, { passive: true });
+    document.addEventListener('pointerleave', onLeave);
+    return () => {
+      root.classList.remove('has-custom-cursor');
+      window.removeEventListener('pointerover', onOver);
+      document.removeEventListener('pointerleave', onLeave);
+    };
+  }, [enabled]);
 
-  if (!isPointerDevice || prefersReducedMotion) return null;
-  if (x < 0 || y < 0) return null;
+  if (!enabled) return null;
 
   return (
-    <motion.div
-      className="fixed top-0 left-0 pointer-events-none z-[9999] flex items-center justify-center rounded-full"
-      style={{
-        transform: 'translate(-50%, -50%)',
-      }}
-      animate={{
-        x,
-        y,
-        width: cursorState.variant === 'project' ? 68 : cursorState.variant === 'hover' ? 36 : 10,
-        height: cursorState.variant === 'project' ? 68 : cursorState.variant === 'hover' ? 36 : 10,
-        backgroundColor:
-          cursorState.variant === 'project'
-            ? 'rgba(59, 130, 246, 0.9)'
-            : cursorState.variant === 'hover'
-            ? 'rgba(59, 130, 246, 0.15)'
-            : 'rgba(96, 165, 250, 0.9)',
-        border:
-          cursorState.variant === 'hover'
-            ? '1px solid rgba(96, 165, 250, 0.6)'
-            : cursorState.variant === 'project'
-            ? '1px solid rgba(255, 255, 255, 0.4)'
-            : 'none',
-        backdropFilter: cursorState.variant === 'project' ? 'blur(4px)' : 'none',
-      }}
-      transition={{
-        type: 'spring',
-        stiffness: 400,
-        damping: 28,
-        mass: 0.5,
-      }}
-    >
-      {cursorState.text && (
-        <span className="text-[10px] font-bold text-white font-mono tracking-wider select-none uppercase">
-          {cursorState.text}
-        </span>
-      )}
-    </motion.div>
+    <>
+      <motion.div
+        aria-hidden="true"
+        className="pointer-events-none fixed left-0 top-0 z-[100] rounded-full border border-accent-light/70 mix-blend-difference"
+        style={{ x: springX, y: springY, translateX: '-50%', translateY: '-50%' }}
+        animate={{ width: hovering ? 56 : 32, height: hovering ? 56 : 32, opacity: visible ? 1 : 0 }}
+        transition={{ duration: 0.2, ease: [0.25, 0.1, 0.25, 1] }}
+      />
+      <motion.div
+        aria-hidden="true"
+        className="pointer-events-none fixed left-0 top-0 z-[100] h-1.5 w-1.5 rounded-full bg-mist"
+        style={{ x, y, translateX: '-50%', translateY: '-50%' }}
+        animate={{ opacity: visible ? 1 : 0 }}
+        transition={{ duration: 0.15 }}
+      />
+    </>
   );
-};
+}
