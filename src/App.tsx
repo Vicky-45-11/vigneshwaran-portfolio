@@ -18,6 +18,9 @@ import { useScrollProgress } from './hooks/useScrollProgress';
 import { BlockBreak } from './components/World/BlockBreak';
 import { Hud } from './components/World/Hud';
 import { WorldBackground } from './components/World/WorldBackground';
+import { ChatConsole } from './components/World/ChatConsole';
+import { GameSettingsProvider } from './components/World/GameSettings';
+import { useGame } from './components/World/gameContext';
 
 const INTRO_KEY = 'vs_intro_seen';
 
@@ -32,9 +35,17 @@ function shouldShowIntro(): boolean {
 }
 
 export function App() {
+  return (
+    <GameSettingsProvider>
+      <Portfolio />
+    </GameSettingsProvider>
+  );
+}
+
+function Portfolio() {
   const [introOpen, setIntroOpen] = useState(shouldShowIntro);
   const [introSkipped, setIntroSkipped] = useState(false);
-  const [night, setNight] = useState(false);
+  const { night, weather } = useGame();
   const { progress, activeSection } = useScrollProgress(sectionIds);
 
   const finishIntro = useCallback((skipped: boolean) => {
@@ -56,21 +67,17 @@ export function App() {
         Skip to content
       </a>
 
-      <WorldBackground night={night} />
+      <WorldBackground night={night} weather={weather} />
       {!introOpen && <BlockBreak />}
       <Hud activeSection={activeSection} progress={progress} visible={!introOpen} />
+      <ChatConsole visible={!introOpen} />
 
       <AnimatePresence custom={introSkipped}>
         {introOpen && <IntroScreen onFinish={finishIntro} />}
       </AnimatePresence>
 
       <div className="relative min-h-screen overflow-x-clip pb-24 text-mist sm:pb-28" inert={introOpen}>
-        <Navbar
-          activeSection={activeSection}
-          ready={!introOpen}
-          night={night}
-          onToggleNight={() => setNight((n) => !n)}
-        />
+        <Navbar activeSection={activeSection} ready={!introOpen} />
         <main id="main">
           <Hero ready={!introOpen} />
           <TechMarquee />

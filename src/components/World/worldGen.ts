@@ -19,6 +19,10 @@ export interface World {
   rows: number;
   cells: Cell[][];
   emissive: Emissive[];
+  /** Row of the grass block in each column. */
+  surface: number[];
+  /** Open cave cells where bats can fly, as [col, row]. */
+  caveSpots: [number, number][];
 }
 
 /** Row where each zone starts. */
@@ -203,7 +207,11 @@ export function generateWorld(cols: number): World {
         emissive.push({ col: c, row, kind: 'lava' });
       }
 
-  return { cols, rows, cells, emissive };
+  const caveSpots: [number, number][] = [];
+  for (let row = ZONES.surface + 10; row < ZONES.bedrock; row += 3)
+    for (let c = 0; c < cols; c += 2) if (cells[row][c] === 'cave') caveSpots.push([c, row]);
+
+  return { cols, rows, cells, emissive, surface, caveSpots };
 }
 
 /** How dark the terrain is drawn at a given row, so text on top stays readable. */

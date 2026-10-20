@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { AnimatePresence, motion, useMotionValueEvent, useScroll } from 'framer-motion';
-import { Menu, Moon, Sun, X } from 'lucide-react';
+import { CloudLightning, CloudRain, Menu, Moon, Sun, Volume2, VolumeX, X } from 'lucide-react';
+import { useGame } from '../World/gameContext';
 import { EASE_EDITORIAL } from '../animations/easing';
 import { navLinks, personal } from '../../data/portfolio';
 import { GithubIcon } from '../icons/GithubIcon';
@@ -10,26 +11,54 @@ interface NavbarProps {
   activeSection: string;
   /** Delay the entrance until the intro has gone. */
   ready: boolean;
-  night: boolean;
-  onToggleNight: () => void;
 }
 
-function DayNightButton({ night, onToggle }: { night: boolean; onToggle: () => void }) {
+const WEATHER_NEXT = { clear: 'rain', rain: 'thunder', thunder: 'clear' } as const;
+
+/** Day/night, weather and sound switches for the block world. */
+function WorldControls({ compact = false }: { compact?: boolean }) {
+  const { night, setNight, weather, setWeather, sound, setSound } = useGame();
+  const size = 'mc-btn flex h-10 w-10 items-center justify-center';
   return (
-    <button
-      type="button"
-      onClick={onToggle}
-      aria-pressed={night}
-      aria-label={night ? 'Switch the world to day' : 'Switch the world to night'}
-      title={night ? 'Day' : 'Night'}
-      className="mc-btn flex h-10 w-10 items-center justify-center"
-    >
-      {night ? <Sun size={18} aria-hidden="true" /> : <Moon size={18} aria-hidden="true" />}
-    </button>
+    <div className="flex items-center gap-2">
+      <button
+        type="button"
+        onClick={() => setNight(!night)}
+        aria-pressed={night}
+        aria-label={night ? 'Switch the world to day' : 'Switch the world to night'}
+        title={night ? 'Day' : 'Night'}
+        className={size}
+      >
+        {night ? <Sun size={18} aria-hidden="true" /> : <Moon size={18} aria-hidden="true" />}
+      </button>
+      {!compact && (
+        <>
+          <button
+            type="button"
+            onClick={() => setWeather(WEATHER_NEXT[weather])}
+            aria-label={`Weather: ${weather}. Change weather`}
+            title={`Weather: ${weather}`}
+            className={`${size} ${weather !== 'clear' ? 'mc-btn--pressed' : ''}`}
+          >
+            {weather === 'thunder' ? <CloudLightning size={18} aria-hidden="true" /> : <CloudRain size={18} aria-hidden="true" />}
+          </button>
+          <button
+            type="button"
+            onClick={() => setSound(!sound)}
+            aria-pressed={sound}
+            aria-label={sound ? 'Turn sound effects off' : 'Turn sound effects on'}
+            title={sound ? 'Sound on' : 'Sound off'}
+            className={`${size} ${sound ? 'mc-btn--pressed' : ''}`}
+          >
+            {sound ? <Volume2 size={18} aria-hidden="true" /> : <VolumeX size={18} aria-hidden="true" />}
+          </button>
+        </>
+      )}
+    </div>
   );
 }
 
-export function Navbar({ activeSection, ready, night, onToggleNight }: NavbarProps) {
+export function Navbar({ activeSection, ready }: NavbarProps) {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const reducedMotion = useReducedMotion();
@@ -96,11 +125,11 @@ export function Navbar({ activeSection, ready, night, onToggleNight }: NavbarPro
               );
             })}
           </ul>
-          <DayNightButton night={night} onToggle={onToggleNight} />
+          <WorldControls />
           </div>
 
           <div className="flex items-center gap-2 md:hidden">
-          <DayNightButton night={night} onToggle={onToggleNight} />
+          <WorldControls compact />
           <button
             type="button"
             className="mc-btn flex h-11 w-11 items-center justify-center md:hidden"
@@ -144,6 +173,9 @@ export function Navbar({ activeSection, ready, night, onToggleNight }: NavbarPro
                 </motion.li>
               ))}
             </ul>
+            <div className="mt-8">
+              <WorldControls />
+            </div>
             <div className="mt-auto flex flex-col gap-3 text-sm text-mist-muted">
               <a href={`mailto:${personal.email}`} className="break-all py-1 hover:text-mist">
                 {personal.email}

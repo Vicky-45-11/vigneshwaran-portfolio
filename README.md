@@ -12,6 +12,11 @@ Game features:
 - **"Advancement Made!" toasts** the first time you reach each section.
 - **Block breaking**: clicking anywhere throws pixel particles in the colours of the layer you are in.
 - **Day/night** toggle (sun/moon button in the navbar).
+- **Weather**: clear, rain or thunder (cloud button in the navbar), with lightning flashes.
+- **Mobs**: pigs, sheep and chickens wander the surface; bats flutter in the caves.
+- **Chat console**: press `T` (or `/`, or the chat button) and type `/help`. Commands include `/tp skills`, `/time set night`, `/weather rain`, `/sound on`, `/whoami`, `/projects`, `/email` and `/github`.
+- **Crafting table** under the skills: pick a project and its technologies are placed in a 3×3 grid to craft it (ingredients come from each project's `technologies` list).
+- **Sound effects** made with the Web Audio API (clicks, block breaks, level-ups, thunder). Off by default; turn them on with the speaker button or `/sound on`.
 - A **floating voxel island** in the hero built from CSS 3D cubes; drag it to spin.
 - Yellow **splash text** beside the title, an inventory-style skills grid, a title-screen intro, and stone, green and end-stone UI.
 

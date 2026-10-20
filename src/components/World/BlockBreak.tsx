@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { blockColors, type BlockName } from './textures';
+import { sfx } from './sound';
 import { useReducedMotion } from '../../hooks/useReducedMotion';
 
 /**
@@ -68,6 +69,8 @@ export function BlockBreak() {
       if (e.button !== 0) return;
       const target = e.target as HTMLElement | null;
       if (target?.closest('input, textarea, select')) return;
+      if (target?.closest('a, button, [role="button"]')) sfx.click();
+      else sfx.breakBlock();
       const block = layerBlock();
       let colors = palettes.get(block);
       if (!colors) {

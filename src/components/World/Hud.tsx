@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { AnimatePresence, motion, useMotionValueEvent, type MotionValue } from 'framer-motion';
 import type { BlockName } from './textures';
+import { sfx } from './sound';
 import { useReducedMotion } from '../../hooks/useReducedMotion';
 
 /**
@@ -34,6 +35,7 @@ function AdvancementToast({ slot, onDone }: { slot: Slot; onDone: (id: string) =
   const reducedMotion = useReducedMotion();
 
   useEffect(() => {
+    sfx.levelUp();
     const id = window.setTimeout(() => onDone(slot.id), 3600);
     return () => window.clearTimeout(id);
   }, [slot.id, onDone]);
@@ -98,7 +100,7 @@ export function Hud({ activeSection, progress, visible }: HudProps) {
 
   return (
     <>
-      <div className="pointer-events-none fixed bottom-24 right-3 z-[45] flex w-[min(78vw,20rem)] flex-col gap-2 sm:bottom-auto sm:right-5 sm:top-24" aria-hidden="true">
+      <div className="pointer-events-none fixed right-3 top-20 z-[45] flex w-[min(78vw,20rem)] flex-col gap-2 sm:right-5 sm:top-24" aria-hidden="true">
         <AnimatePresence>
           {toasts.map((slot) => (
             <AdvancementToast key={slot.id} slot={slot} onDone={dismiss} />

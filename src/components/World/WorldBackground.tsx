@@ -1,5 +1,8 @@
 import { useEffect, useRef } from 'react';
 import { blockCanvas, type BlockName } from './textures';
+import { drawBat, drawMob, type Bat, type Mob, type MobKind } from './mobs';
+import { sfx } from './sound';
+import type { Weather } from './gameContext';
 import { generateWorld, rowShade, WORLD_ROWS, ZONES, type World } from './worldGen';
 import { useReducedMotion } from '../../hooks/useReducedMotion';
 
@@ -71,18 +74,21 @@ function bake(world: World): HTMLCanvasElement {
 
 interface WorldBackgroundProps {
   night: boolean;
+  weather: Weather;
 }
 
-export function WorldBackground({ night }: WorldBackgroundProps) {
+export function WorldBackground({ night, weather }: WorldBackgroundProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const reducedMotion = useReducedMotion();
   const nightRef = useRef(night);
+  const weatherRef = useRef(weather);
   const redrawRef = useRef<() => void>(() => {});
 
   useEffect(() => {
     nightRef.current = night;
+    weatherRef.current = weather;
     redrawRef.current();
-  }, [night]);
+  }, [night, weather]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -96,6 +102,11 @@ export function WorldBackground({ night }: WorldBackgroundProps) {
     let viewRows = 0;
     let clouds: Cloud[] = [];
     let stars: { x: number; y: number; s: number; p: number }[] = [];
+    let mobs: Mob[] = [];
+    let bats: Bat[] = [];
+    let lastTime = 0;
+    let flash = 0;
+    let nextFlash = 4;
     let raf = 0;
     let last = 0;
     let dirty = true;
@@ -118,6 +129,19 @@ export function WorldBackground({ night }: WorldBackgroundProps) {
           w: 4 + ((i * 7) % 5),
           speed: 0.25 + ((i * 3) % 4) * 0.08,
         }));
+        const kinds: MobKind[] = ['pig', 'sheep', 'chicken'];
+        mobs = Array.from({ length: Math.max(2, Math.round(cols / 10)) }, (_, i) => ({
+          kind: kinds[i % kinds.length],
+          x: 2 + ((i * 7.3) % Math.max(1, cols - 4)),
+          dir: i % 2 ? 1 : -1,
+          speed: 0.5 + (i % 3) * 0.2,
+          walking: i % 2 === 0,
+          nextChange: 1 + (i % 4),
+        }));
+        bats = world.caveSpots
+          .filter((_, i) => i % 9 === 0)
+          .slice(0, 10)
+          .map(([col, row], i) => ({ col, row, phase: i * 1.3 }));
         stars = Array.from({ length: 140 }, (_, i) => ({
           x: ((i * 7919) % 1000) / 1000,
           y: ((i * 104729) % 1000) / 1000,
@@ -158,7 +182,11 @@ export function WorldBackground({ night }: WorldBackgroundProps) {
       const cam = Math.max(0, Math.min(WORLD_ROWS - viewRows, cameraRow()));
       const camPx = cam * block;
       const isNight = nightRef.current;
+      const weather = weatherRef.current;
+      const wet = weather !== 'clear';
       const t = reducedMotion ? 0 : time / 1000;
+      const dt = Math.min(0.1, Math.max(0, t - lastTime));
+      lastTime = t;
       const rowY = (row: number) => row * block - camPx;
 
       ctx.clearRect(0, 0, w, h);
@@ -170,16 +198,16 @@ export function WorldBackground({ night }: WorldBackgroundProps) {
       if (skyBottom > 0) {
         const g = ctx.createLinearGradient(0, rowY(0), 0, skyBottom);
         if (isNight) {
-          g.addColorStop(0, '#060b1f');
-          g.addColorStop(1, '#1c2a55');
+          g.addColorStop(0, wet ? '#04060c' : '#060b1f');
+          g.addColorStop(1, wet ? '#141a2c' : '#1c2a55');
         } else {
-          g.addColorStop(0, '#5e95f2');
-          g.addColorStop(1, '#b9d6ff');
+          g.addColorStop(0, wet ? '#5f6f86' : '#5e95f2');
+          g.addColorStop(1, wet ? '#9ba8b8' : '#b9d6ff');
         }
         ctx.fillStyle = g;
         ctx.fillRect(0, 0, w, skyBottom);
 
-        if (isNight) {
+        if (isNight && !wet) {
           for (const s of stars) {
             const y = rowY(0) + s.y * (ZONES.surface - 2) * block;
             if (y > skyBottom) continue;
@@ -194,7 +222,9 @@ export function WorldBackground({ night }: WorldBackgroundProps) {
         const size = block * 2.2;
         const sx = w * 0.74;
         const sy = rowY(3);
-        if (isNight) {
+        if (wet) {
+          // Sun and moon hide behind the rain clouds.
+        } else if (isNight) {
           ctx.fillStyle = '#e4e6f0';
           ctx.fillRect(sx, sy, size, size);
           ctx.fillStyle = '#b9bccb';
@@ -210,7 +240,13 @@ export function WorldBackground({ night }: WorldBackgroundProps) {
         }
 
         // Clouds
-        ctx.fillStyle = isNight ? 'rgba(160, 170, 200, 0.35)' : 'rgba(255, 255, 255, 0.88)';
+        ctx.fillStyle = wet
+          ? isNight
+            ? 'rgba(60, 64, 78, 0.85)'
+            : 'rgba(120, 126, 138, 0.92)'
+          : isNight
+            ? 'rgba(160, 170, 200, 0.35)'
+            : 'rgba(255, 255, 255, 0.88)';
         for (const c of clouds) {
           const span = world.cols + c.w;
           const x = (((c.x + t * c.speed) % span) + span) % span - c.w;
@@ -241,6 +277,37 @@ export function WorldBackground({ night }: WorldBackgroundProps) {
       const srcY = cam * TILE;
       const srcH = Math.min(viewRows + 1, WORLD_ROWS - cam) * TILE;
       ctx.drawImage(terrain, 0, srcY, terrain.width, srcH, 0, 0, world.cols * block, (srcH / TILE) * block);
+
+      // Animals on the surface
+      const surfaceVisible = rowY(ZONES.surface - 6) < h && rowY(ZONES.surface + 2) > 0;
+      for (const m of mobs) {
+        if (!reducedMotion) {
+          m.nextChange -= dt;
+          if (m.nextChange <= 0) {
+            m.walking = !m.walking;
+            if (Math.random() < 0.4) m.dir = m.dir === 1 ? -1 : 1;
+            m.nextChange = 1.5 + Math.random() * 3;
+          }
+          if (m.walking) m.x += m.dir * m.speed * dt;
+          if (m.x < 1 || m.x > world.cols - 2) {
+            m.dir = m.dir === 1 ? -1 : 1;
+            m.x = Math.min(world.cols - 2, Math.max(1, m.x));
+          }
+        }
+        if (!surfaceVisible) continue;
+        const col = Math.min(world.cols - 1, Math.max(0, Math.round(m.x)));
+        drawMob(ctx, m, m.x * block, rowY(world.surface[col]), block, t);
+      }
+
+      // Bats in the caves
+      for (const bat of bats) {
+        const by = rowY(bat.row) + Math.cos(t * 1.3 + bat.phase) * block * 0.8;
+        if (by < -block || by > h + block) continue;
+        const bx = (bat.col + 0.5) * block + Math.sin(t * 0.9 + bat.phase) * block * 1.6;
+        ctx.globalAlpha = 0.85;
+        drawBat(ctx, bx, by, block, t, bat.phase);
+        ctx.globalAlpha = 1;
+      }
 
       if (isNight && skyBottom > 0) {
         ctx.fillStyle = 'rgba(8, 12, 40, 0.45)';
@@ -292,6 +359,38 @@ export function WorldBackground({ night }: WorldBackgroundProps) {
         g.addColorStop(1, 'rgba(0, 0, 0, 0)');
         ctx.fillStyle = g;
         ctx.fillRect(x + block / 2 - radius, y + block / 2 - radius, radius * 2, radius * 2);
+      }
+
+      // Rain falls only where there is open sky
+      const rainBottom = Math.min(h, rowY(ZONES.surface + 1));
+      if (wet && rainBottom > 0) {
+        ctx.strokeStyle = isNight ? 'rgba(140, 160, 210, 0.45)' : 'rgba(70, 90, 150, 0.5)';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        const drops = Math.round(w / 6);
+        for (let i = 0; i < drops; i++) {
+          const x = (((i * 97.3) % w) + t * 40) % w;
+          const y = (((i * 53.7) % (h + 60)) + t * (700 + (i % 5) * 60)) % (h + 60) - 40;
+          if (y > rainBottom) continue;
+          ctx.moveTo(x, y);
+          ctx.lineTo(x - 3, y + 14);
+        }
+        ctx.stroke();
+      }
+
+      // Lightning during thunderstorms
+      if (weather === 'thunder' && !reducedMotion) {
+        nextFlash -= dt;
+        if (nextFlash <= 0) {
+          flash = 1;
+          nextFlash = 6 + Math.random() * 8;
+          window.setTimeout(() => sfx.thunder(), 250);
+        }
+      }
+      if (flash > 0) {
+        ctx.fillStyle = `rgba(235, 240, 255, ${(flash * (skyBottom > 0 ? 0.7 : 0.25)).toFixed(3)})`;
+        ctx.fillRect(0, 0, w, h);
+        flash = Math.max(0, flash - dt * 3.5);
       }
     };
 
