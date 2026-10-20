@@ -78,6 +78,24 @@
     background-clip: text;
   }
 
+  /* Hero letters animate one by one, so each carries its own slice of the
+     heading gradient: the top line runs dark to mid, the bottom mid to light. */
+  .vapor-letter {
+    padding-block: 0.08em;
+    margin-block: -0.08em;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .vapor-letter--top {
+    background-image: linear-gradient(180deg, #646973 0%, #9da5ae 100%);
+  }
+
+  .vapor-letter--bottom {
+    background-image: linear-gradient(180deg, #9da5ae 0%, #d7e2ea 100%);
+  }
+
   .label-mono {
     font-family: theme('fontFamily.mono');
     font-size: 0.6875rem;

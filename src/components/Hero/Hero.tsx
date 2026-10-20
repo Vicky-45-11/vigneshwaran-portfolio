@@ -2,6 +2,7 @@ import { motion } from 'framer-motion';
 import { ArrowDown } from 'lucide-react';
 import { NeuralOrb } from '../3d/NeuralOrb';
 import { EASE_EDITORIAL } from '../animations/easing';
+import { VaporType } from '../animations/VaporType';
 import { ContactButton } from '../ui/ContactButton';
 import { personal } from '../../data/portfolio';
 import { useReducedMotion } from '../../hooks/useReducedMotion';
@@ -45,14 +46,19 @@ export function Hero({ ready }: HeroProps) {
           <span className="text-accent-light">●</span>&nbsp;&nbsp;{personal.headline} — {personal.location}
         </motion.p>
 
-        <motion.h1
+        <h1
           id="hero-title"
-          {...enter(0.2)}
-          className="hero-heading mt-6 text-[clamp(2.5rem,11.4vw,10.25rem)] font-black uppercase leading-[0.86] tracking-[-0.045em] sm:mt-8"
+          className="mt-6 text-[clamp(2.5rem,11vw,10.25rem)] font-black uppercase leading-[0.86] tracking-[-0.045em] sm:mt-8"
         >
-          <span className="block">Hi, I'm</span>
-          <span className="block">{personal.firstName}</span>
-        </motion.h1>
+          <VaporType
+            active={ready}
+            reducedMotion={reducedMotion}
+            lines={[
+              { text: "Hi, I'm", letterClassName: 'vapor-letter vapor-letter--top' },
+              { text: personal.firstName, letterClassName: 'vapor-letter vapor-letter--bottom' },
+            ]}
+          />
+        </h1>
 
         <motion.p {...enter(0.4, 24)} className="mt-8 max-w-xl text-lg leading-relaxed text-mist sm:text-xl">
           {personal.heroCopy}
