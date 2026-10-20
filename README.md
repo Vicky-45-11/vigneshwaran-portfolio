@@ -1,6 +1,21 @@
 # Vigneshwaran S — Portfolio
 
-Personal portfolio built with React 19, TypeScript, Vite, Tailwind CSS, Framer Motion and Three.js. Deployed on Vercel from this repository.
+Personal portfolio built with React 19, TypeScript, Vite, Tailwind CSS and Framer Motion, themed as a block-building game. Deployed on Vercel from this repository.
+
+## The block world
+
+Scrolling the page travels down through a pixel-art world drawn in code (no image assets): sky and surface at the top, caves with ores, deepslate with diamonds, the Nether with lava and a portal, and finally The End for the contact section and footer. All textures are generated at runtime in [`src/components/World/textures.ts`](src/components/World/textures.ts) and exposed to CSS as `var(--tex-<block>)`.
+
+Game features:
+- **Hotbar** at the bottom: one slot per section; click a slot or press 1–9 to jump.
+- **XP bar** that fills as you scroll, and a **level** that counts the sections you have visited.
+- **"Advancement Made!" toasts** the first time you reach each section.
+- **Block breaking**: clicking anywhere throws pixel particles in the colours of the layer you are in.
+- **Day/night** toggle (sun/moon button in the navbar).
+- A **floating voxel island** in the hero built from CSS 3D cubes; drag it to spin.
+- Yellow **splash text** beside the title, an inventory-style skills grid, a title-screen intro, and stone, green and end-stone UI.
+
+This is an original theme inspired by block-building games; it does not use any game's assets, logo or fonts.
 
 ## Scripts
 
@@ -23,9 +38,8 @@ To add a repository or live link to a project, set `sourceUrl` or `liveUrl` on t
 ```
 src/
   components/
-    3d/            NeuralOrb (lazy three.js scene + CSS fallback)
+    World/         textures, worldGen, WorldBackground, Hud (hotbar, XP, advancements), BlockBreak, VoxelIsland
     animations/    FadeIn, Magnet, AnimatedText, VaporType (hero name)
-    Cursor/        SplashCursor (React Bits WebGL fluid cursor) + PortfolioCursor wrapper
     ui/            ContactButton, LiveProjectButton, SectionHeading, TechIcon
     Intro/ Navbar/ Hero/ Marquee/ About/ Focus/ Skills/
     Projects/ Experience/ (MagicTransform) Education/ Certifications/ Contact/ Footer/
@@ -35,10 +49,7 @@ src/
 
 ## Performance notes
 
-- three.js is loaded with a dynamic import only when the orb is about to render, and is split into its own chunks (`vite.config.ts`), so it is not part of the initial download.
-- The orb's render loop pauses when it is off screen or the tab is hidden, and caps the pixel ratio.
-- Visitors who prefer reduced motion get static content, no fluid cursor and a scrollable (non-animated) technology strip.
-- If WebGL is unavailable, a CSS version of the orb is shown instead.
-- The fluid cursor (`SplashCursor`) is lazy-loaded after the intro, uses lower quality on touch devices, and draws nothing where WebGL2 is unavailable. Its canvas ignores pointer events, so links and buttons work as normal.
+- The world is baked once into an offscreen canvas at 16 px per block and scaled up with nearest-neighbour filtering, so each frame is a single image copy plus a few glowing light sources. Animation runs at 24 fps and stops while the tab is hidden.
+- Visitors who prefer reduced motion get a still world (no drifting clouds, flicker or particles), no block breaking, a non-spinning island and a scrollable technology strip.
 - The hero name uses `VaporType`: the text stays real DOM text, and a canvas behind it draws the vapor. It pauses off screen and is plain text for reduced-motion visitors. It is written for this site, not the React Bits Pro component, and can be swapped for that once the licensed registry is available.
 - The Experience section uses `MagicTransform`: each responsibility starts as a plain document, flies into a glowing core and comes out as a coloured result card. The result cards are always in the markup, so screen readers and reduced-motion visitors get the full list. Like `VaporType`, it is written for this site rather than taken from React Bits Pro.

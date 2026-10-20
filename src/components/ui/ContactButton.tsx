@@ -8,14 +8,9 @@ interface ContactButtonProps {
   type?: 'link' | 'submit';
 }
 
-const styles =
-  'group inline-flex min-h-12 items-center gap-3 rounded-full px-7 py-3.5 text-sm font-semibold tracking-[0.14em] text-white ' +
-  'ring-1 ring-inset ring-white/20 shadow-[0_0_0_rgba(59,130,246,0)] transition-[box-shadow,filter] duration-200 ' +
-  'hover:shadow-[0_8px_40px_-6px_rgba(59,130,246,0.65)] hover:brightness-110 active:brightness-95';
+const styles = 'mc-btn mc-btn--green group inline-flex min-h-12 items-center gap-3 px-7 py-3 text-lg';
 
-const background = { backgroundImage: 'linear-gradient(123deg, #0B1F3A, #2563EB, #3B82F6)' };
-
-/** Blue gradient pill used for every primary "contact" action. */
+/** Green block-game button used for every primary "contact" action. */
 export function ContactButton({ href = '#contact', label = 'CONTACT ME', className = '', type = 'link' }: ContactButtonProps) {
   const content = (
     <>
@@ -27,11 +22,11 @@ export function ContactButton({ href = '#contact', label = 'CONTACT ME', classNa
   return (
     <Magnet className={className}>
       {type === 'submit' ? (
-        <button type="submit" className={styles} style={background}>
+        <button type="submit" className={styles}>
           {content}
         </button>
       ) : (
-        <a href={href} className={styles} style={background}>
+        <a href={href} className={styles}>
           {content}
         </a>
       )}

@@ -1,15 +1,50 @@
+import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { ArrowDown } from 'lucide-react';
-import { NeuralOrb } from '../3d/NeuralOrb';
 import { EASE_EDITORIAL } from '../animations/easing';
 import { VaporType } from '../animations/VaporType';
 import { ContactButton } from '../ui/ContactButton';
-import { personal } from '../../data/portfolio';
+import { VoxelIsland } from '../World/VoxelIsland';
+import { education, personal } from '../../data/portfolio';
 import { useReducedMotion } from '../../hooks/useReducedMotion';
 
 interface HeroProps {
   /** Hold the entrance animation until the intro has closed. */
   ready: boolean;
+}
+
+// Yellow title-screen splashes, all true of this portfolio.
+const SPLASHES = [
+  'Now with AI!',
+  'Computer Science (AI)!',
+  'Full-stack!',
+  `CGPA ${education[0].cgpa}!`,
+  'Made in Chennai!',
+  'Built with React!',
+  'Machine learning inside!',
+  'Also try Python!',
+];
+
+function SplashText() {
+  const reducedMotion = useReducedMotion();
+  const [i, setI] = useState(0);
+
+  useEffect(() => {
+    if (reducedMotion) return undefined;
+    const id = window.setInterval(() => setI((n) => (n + 1) % SPLASHES.length), 4200);
+    return () => window.clearInterval(id);
+  }, [reducedMotion]);
+
+  return (
+    <button
+      type="button"
+      onClick={() => setI((n) => (n + 1) % SPLASHES.length)}
+      className="mc-splash absolute right-1 top-8 z-10 text-[clamp(0.95rem,2.3vw,1.9rem)] sm:right-[6%] sm:top-[0.2em] lg:left-[46%] lg:right-auto"
+      aria-label={`Splash text: ${SPLASHES[i]} Click for another.`}
+    >
+      <span className="mc-splash__pulse inline-block">{SPLASHES[i]}</span>
+    </button>
+  );
 }
 
 export function Hero({ ready }: HeroProps) {
@@ -24,59 +59,53 @@ export function Hero({ ready }: HeroProps) {
 
   return (
     <section id="hero" aria-labelledby="hero-title" className="relative isolate flex min-h-[100svh] flex-col overflow-hidden pt-24 sm:pt-28">
-      <div className="grid-lines pointer-events-none absolute inset-0 -z-10 opacity-50" aria-hidden="true" />
-      <div
-        className="pointer-events-none absolute -right-[20%] top-[8%] -z-10 h-[70vmax] w-[70vmax] rounded-full bg-[radial-gradient(circle,rgba(59,130,246,0.16),transparent_60%)]"
-        aria-hidden="true"
-      />
-
       <motion.div
-        className="pointer-events-none absolute -z-[5] aspect-square w-[min(92vw,420px)] bottom-[16%] right-[-24%] sm:bottom-auto sm:right-[-6%] sm:top-[6%] sm:w-[min(70vw,560px)] lg:right-[4%] lg:top-[8%] lg:w-[min(46vw,720px)]"
+        className="order-2 mx-auto h-[300px] w-full max-w-md sm:h-[360px] lg:absolute lg:right-[4%] lg:top-[44%] lg:-z-[5] lg:order-none lg:h-[min(44vh,440px)] lg:w-[min(36vw,520px)] lg:max-w-none"
         initial={{ opacity: 0, y: 30 * distance, scale: reducedMotion ? 1 : 0.94 }}
         animate={ready ? { opacity: 1, y: 0, scale: 1 } : undefined}
         transition={{ duration: reducedMotion ? 0.2 : 1.4, delay: reducedMotion ? 0 : 0.35, ease: EASE_EDITORIAL }}
       >
         <div className={reducedMotion ? 'h-full w-full' : 'animate-float h-full w-full'}>
-          <NeuralOrb className="h-full w-full" />
+          <VoxelIsland className="h-full w-full" spin={!reducedMotion} />
         </div>
       </motion.div>
 
-      <div className="container-editorial flex flex-1 flex-col">
-        <motion.p {...enter(0.1, 16)} className="label-mono mt-6 text-mist-muted sm:mt-10">
-          <span className="text-accent-light">●</span>&nbsp;&nbsp;{personal.headline} — {personal.location}
+      <div className="container-editorial order-1 flex flex-col lg:flex-1">
+        <motion.p {...enter(0.1, 16)} className="label-mono mt-6 text-white [text-shadow:2px_2px_0_#1d3a66] sm:mt-10">
+          <span className="text-[#ffff55]">■</span>&nbsp;&nbsp;{personal.headline} — {personal.location}
         </motion.p>
 
-        <h1
-          id="hero-title"
-          className="mt-6 text-[clamp(2.5rem,11vw,10.25rem)] font-black uppercase leading-[0.86] tracking-[-0.045em] sm:mt-8"
-        >
-          <VaporType
-            active={ready}
-            reducedMotion={reducedMotion}
-            lines={[
-              { text: "Hi, I'm", letterClassName: 'vapor-letter vapor-letter--top' },
-              { text: personal.firstName, letterClassName: 'vapor-letter vapor-letter--bottom' },
-            ]}
-          />
-        </h1>
+        <div className="relative">
+          <h1
+            id="hero-title"
+            className="mt-6 text-[clamp(2.4rem,10.4vw,9.5rem)] font-bold uppercase leading-[0.9] tracking-normal sm:mt-8"
+          >
+            <VaporType
+              active={ready}
+              reducedMotion={reducedMotion}
+              color="255, 255, 255"
+              lines={[
+                { text: "Hi, I'm", letterClassName: 'vapor-letter vapor-letter--top' },
+                { text: personal.firstName, letterClassName: 'vapor-letter vapor-letter--bottom' },
+              ]}
+            />
+          </h1>
+          {ready && <SplashText />}
+        </div>
 
-        <motion.p {...enter(0.4, 24)} className="mt-8 max-w-xl text-lg leading-relaxed text-mist sm:text-xl">
-          {personal.heroCopy}
-        </motion.p>
-        <motion.p {...enter(0.5, 24)} className="mt-3 max-w-xl text-sm text-mist-muted">
-          {personal.supportingHeadline}
-        </motion.p>
+        <motion.div {...enter(0.4, 24)} className="mc-card mt-8 max-w-xl p-5 sm:p-6">
+          <p className="text-lg leading-relaxed text-white sm:text-xl">{personal.heroCopy}</p>
+          <p className="label-mono mt-3 text-accent-light">{personal.supportingHeadline}</p>
+        </motion.div>
+      </div>
 
-        <div className="mt-auto flex flex-col gap-8 border-t border-line pb-8 pt-8 sm:flex-row sm:items-center sm:justify-between sm:pb-10">
+      <div className="container-editorial order-3 mt-auto">
+        <div className="flex flex-col gap-6 pb-10 pt-8 sm:flex-row sm:items-center sm:justify-between sm:pb-28">
           <motion.div {...enter(0.6, 16)} className="flex items-center gap-4">
-            <a
-              href="#stack"
-              className="flex h-11 w-11 items-center justify-center rounded-full border border-white/15 text-mist transition-colors hover:border-white/40"
-              aria-label="Scroll to the technology section"
-            >
-              <ArrowDown size={18} aria-hidden="true" />
+            <a href="#stack" className="mc-btn flex h-12 w-12 items-center justify-center" aria-label="Scroll to the technology section">
+              <ArrowDown size={20} aria-hidden="true" />
             </a>
-            <span className="label-mono text-mist">{personal.heroMeta}</span>
+            <span className="label-mono text-white [text-shadow:2px_2px_0_#000]">{personal.heroMeta}</span>
           </motion.div>
           <motion.div {...enter(0.7, 24)}>
             <ContactButton />

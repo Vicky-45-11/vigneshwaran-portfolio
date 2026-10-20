@@ -1,6 +1,5 @@
 import { useCallback, useState } from 'react';
 import { AnimatePresence, MotionConfig } from 'framer-motion';
-import { PortfolioCursor } from './components/Cursor/PortfolioCursor';
 import { IntroScreen } from './components/Intro/IntroScreen';
 import { Navbar } from './components/Navbar/Navbar';
 import { Hero } from './components/Hero/Hero';
@@ -16,6 +15,9 @@ import { Contact } from './components/Contact/Contact';
 import { Footer } from './components/Footer/Footer';
 import { sectionIds } from './data/portfolio';
 import { useScrollProgress } from './hooks/useScrollProgress';
+import { BlockBreak } from './components/World/BlockBreak';
+import { Hud } from './components/World/Hud';
+import { WorldBackground } from './components/World/WorldBackground';
 
 const INTRO_KEY = 'vs_intro_seen';
 
@@ -32,6 +34,7 @@ function shouldShowIntro(): boolean {
 export function App() {
   const [introOpen, setIntroOpen] = useState(shouldShowIntro);
   const [introSkipped, setIntroSkipped] = useState(false);
+  const [night, setNight] = useState(false);
   const { progress, activeSection } = useScrollProgress(sectionIds);
 
   const finishIntro = useCallback((skipped: boolean) => {
@@ -48,19 +51,26 @@ export function App() {
     <MotionConfig reducedMotion="user">
       <a
         href="#main"
-        className="label-mono fixed left-4 top-4 z-[70] -translate-y-24 rounded-full bg-mist px-4 py-3 text-ink transition-transform focus:translate-y-0"
+        className="label-mono fixed left-4 top-4 z-[70] -translate-y-24 bg-mist px-4 py-3 text-ink transition-transform focus:translate-y-0"
       >
         Skip to content
       </a>
 
-      {!introOpen && <PortfolioCursor />}
+      <WorldBackground night={night} />
+      {!introOpen && <BlockBreak />}
+      <Hud activeSection={activeSection} progress={progress} visible={!introOpen} />
 
       <AnimatePresence custom={introSkipped}>
         {introOpen && <IntroScreen onFinish={finishIntro} />}
       </AnimatePresence>
 
-      <div className="relative min-h-screen overflow-x-clip bg-ink text-mist" inert={introOpen}>
-        <Navbar activeSection={activeSection} progress={progress} ready={!introOpen} />
+      <div className="relative min-h-screen overflow-x-clip pb-24 text-mist sm:pb-28" inert={introOpen}>
+        <Navbar
+          activeSection={activeSection}
+          ready={!introOpen}
+          night={night}
+          onToggleNight={() => setNight((n) => !n)}
+        />
         <main id="main">
           <Hero ready={!introOpen} />
           <TechMarquee />

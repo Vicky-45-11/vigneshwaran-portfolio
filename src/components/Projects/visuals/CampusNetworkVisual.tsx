@@ -36,7 +36,7 @@ const legend: { kind: Kind; label: string }[] = [
 
 export function CampusNetworkVisual() {
   return (
-    <div className="relative flex h-full w-full flex-col overflow-hidden rounded-[1.25rem] border border-line bg-ink p-5 sm:p-6">
+    <div className="relative flex h-full w-full flex-col overflow-hidden border border-line bg-ink p-5 sm:p-6">
       <div className="relative flex-1">
         <svg viewBox="0 0 100 100" preserveAspectRatio="xMidYMid meet" className="absolute inset-0 h-full w-full">
           {edges.map(([a, b]) => (

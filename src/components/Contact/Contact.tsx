@@ -72,8 +72,8 @@ export function Contact() {
   };
 
   const fieldClass = (field: Field) =>
-    `mt-2 w-full rounded-2xl border bg-ink-800 px-4 py-3.5 text-base text-mist placeholder:text-mist-dim transition-colors duration-200 focus:outline-none focus-visible:border-accent-light focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 ${
-      errors[field] ? 'border-red-400/70' : 'border-line hover:border-line-strong'
+    `mt-2 w-full border-[3px] bg-black px-4 py-3 text-base text-white placeholder:text-mist-dim transition-colors duration-200 focus:outline-none focus-visible:border-white focus-visible:outline-none ${
+      errors[field] ? 'border-red-500' : 'border-[#a0a0a0] hover:border-[#d0d0d0]'
     }`;
 
   const renderField = (field: Field, label: string, type: 'text' | 'email' | 'textarea', autoComplete?: string) => (
@@ -118,40 +118,40 @@ export function Contact() {
   return (
     <section id="contact" aria-labelledby="contact-title" className="relative overflow-hidden border-t border-line py-24 sm:py-36">
       <div
-        className="pointer-events-none absolute left-1/2 top-0 h-[60vmax] w-[60vmax] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(circle,rgba(37,99,235,0.18),transparent_60%)]"
+        className="pointer-events-none absolute left-1/2 top-0 h-[60vmax] w-[60vmax] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(circle,rgba(160,90,255,0.16),transparent_60%)]"
         aria-hidden="true"
       />
       <div className="container-editorial relative">
         <FadeIn y={12} duration={0.5}>
-          <p className="label-mono flex items-center gap-3 text-mist-muted">
-            <span className="text-accent-light">08</span>
-            <span className="h-px w-10 bg-white/20" aria-hidden="true" />
+          <p className="label-mono flex items-center gap-3 text-white [text-shadow:2px_2px_0_#000]">
+            <span className="text-[#ffff55]">08</span>
+            <span className="h-[3px] w-10 bg-white/40" aria-hidden="true" />
             Contact
           </p>
         </FadeIn>
         <FadeIn y={40} duration={0.9}>
           <h2
             id="contact-title"
-            className="hero-heading mt-6 text-[clamp(2.75rem,10vw,10rem)] font-black uppercase leading-[0.86] tracking-[-0.035em]"
+            className="hero-heading hero-heading--end mt-6 text-[clamp(2.4rem,8.5vw,8.5rem)] font-bold uppercase leading-[0.92]"
           >
             Let's build something great.
           </h2>
         </FadeIn>
-        <FadeIn delay={0.1} className="mt-8 max-w-xl text-lg text-mist sm:text-xl">
+        <FadeIn delay={0.1} className="mc-card mt-8 max-w-xl p-5 text-lg text-white sm:text-xl">
           Have an idea, project, or opportunity? Let's connect.
         </FadeIn>
 
         <div className="mt-16 grid gap-12 lg:mt-24 lg:grid-cols-12">
           <FadeIn className="lg:col-span-5">
-            <ul className="border-t border-line">
+            <ul className="mc-card px-5">
               {channels.map(({ label, value, href, icon: Icon, external }) => (
-                <li key={label} className="border-b border-line">
+                <li key={label} className="border-b-[3px] border-black/60 last:border-b-0">
                   <a
                     href={href}
                     {...(external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
                     className="group flex items-center gap-4 py-6"
                   >
-                    <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-line text-accent-light">
+                    <span className="mc-slot flex h-11 w-11 shrink-0 items-center justify-center text-accent-cyan">
                       <Icon size={18} aria-hidden="true" />
                     </span>
                     <span className="min-w-0 flex-1">
@@ -169,7 +169,7 @@ export function Contact() {
             <button
               type="button"
               onClick={copyEmail}
-              className="label-mono mt-6 inline-flex min-h-11 items-center gap-2 rounded-full border border-line px-4 text-mist-muted transition-colors hover:border-line-strong hover:text-mist"
+              className="mc-btn mt-6 inline-flex min-h-11 items-center gap-2 px-4 text-base"
             >
               {copied ? <Check size={14} aria-hidden="true" /> : <Copy size={14} aria-hidden="true" />}
               {copied ? 'Email copied' : 'Copy email'}
@@ -177,11 +177,11 @@ export function Contact() {
             <span className="sr-only" aria-live="polite">
               {copied ? 'Email address copied to clipboard.' : ''}
             </span>
-            <p className="label-mono mt-8 text-mist-dim">{personal.location}</p>
+            <p className="label-mono mt-8 text-white/70">{personal.location}</p>
           </FadeIn>
 
           <FadeIn delay={0.1} className="lg:col-span-7">
-            <form noValidate onSubmit={onSubmit} className="grid gap-5 sm:grid-cols-2" aria-describedby="contact-form-note">
+            <form noValidate onSubmit={onSubmit} className="mc-card grid gap-5 p-5 sm:grid-cols-2 sm:p-7" aria-describedby="contact-form-note">
               {renderField('name', 'Name', 'text', 'name')}
               {renderField('email', 'Email', 'email', 'email')}
               <div className="sm:col-span-2">{renderField('subject', 'Subject', 'text')}</div>

@@ -15,13 +15,13 @@ export function Education() {
               as="article"
               key={item.institution}
               delay={i * 0.1}
-              className={`relative flex flex-col overflow-hidden rounded-[2rem] border p-6 sm:p-10 ${
-                item.primary ? 'border-accent/30 bg-ink-800 lg:col-span-7' : 'border-line bg-ink lg:col-span-5'
+              className={`relative flex flex-col overflow-hidden p-6 sm:p-10 ${
+                item.primary ? 'mc-card border-accent lg:col-span-7' : 'mc-card lg:col-span-5'
               }`}
             >
               {item.primary && (
                 <div
-                  className="pointer-events-none absolute -right-24 -top-24 h-72 w-72 rounded-full bg-[radial-gradient(circle,rgba(59,130,246,0.18),transparent_65%)]"
+                  className="pointer-events-none absolute -right-24 -top-24 h-72 w-72 rounded-full bg-[radial-gradient(circle,rgba(76,175,53,0.18),transparent_65%)]"
                   aria-hidden="true"
                 />
               )}
@@ -29,7 +29,7 @@ export function Education() {
                 <span className="label-mono text-accent-light">{item.period}</span>
                 <GraduationCap size={22} strokeWidth={1.5} className="text-mist-dim" aria-hidden="true" />
               </div>
-              <h3 className={`mt-10 font-black uppercase leading-[0.95] tracking-tight text-mist ${item.primary ? 'text-[clamp(1.75rem,3.4vw,3rem)]' : 'text-[clamp(1.5rem,2.6vw,2.25rem)]'}`}>
+              <h3 className={`mt-10 font-pixel font-bold uppercase leading-[0.95] tracking-tight text-mist ${item.primary ? 'text-[clamp(1.75rem,3.4vw,3rem)]' : 'text-[clamp(1.5rem,2.6vw,2.25rem)]'}`}>
                 {item.qualification}
               </h3>
               <p className="mt-4 text-lg text-mist-muted">{item.institution}</p>

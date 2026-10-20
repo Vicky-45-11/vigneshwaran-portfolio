@@ -46,20 +46,20 @@ export function ProjectCard({ project, index, total, progress, stacked }: Projec
       <motion.article
         aria-labelledby={`${project.id}-title`}
         style={stacked ? { scale, transformOrigin: 'top center' } : undefined}
-        className="relative w-full overflow-hidden rounded-[2rem] border border-line bg-ink-800 p-5 shadow-[0_-20px_60px_-20px_rgba(0,0,0,0.8)] sm:rounded-[2.5rem] sm:p-8 lg:h-[min(78svh,680px)] lg:p-10"
+        className="mc-card relative w-full overflow-hidden p-5 sm:p-8 lg:h-[min(78svh,680px)] lg:p-10"
       >
         <div className="grid h-full gap-8 lg:grid-cols-[minmax(0,5fr)_minmax(0,6fr)] lg:gap-12">
           <div className="flex flex-col">
             <div className="flex items-start justify-between gap-4">
-              <span className="hero-heading font-mono text-[clamp(4rem,10vw,8.5rem)] font-medium leading-[0.8] tracking-tighter">
+              <span className="hero-heading text-[clamp(4rem,10vw,8.5rem)] font-bold leading-[0.8]">
                 {project.number}
               </span>
-              <span className="label-mono rounded-full border border-line px-3 py-1.5 text-[0.625rem] text-accent-light">
+              <span className="label-mono mc-slot px-3 py-1 text-accent-light">
                 {project.category}
               </span>
             </div>
 
-            <h3 id={`${project.id}-title`} className="mt-8 text-[clamp(2rem,4.4vw,3.75rem)] font-black uppercase leading-[0.92] tracking-tight text-mist">
+            <h3 id={`${project.id}-title`} className="mt-8 font-pixel text-[clamp(1.9rem,4vw,3.4rem)] font-bold uppercase leading-[0.95] text-white [text-shadow:3px_3px_0_#3f3f3f]">
               {project.title}
             </h3>
             <p className="mt-5 max-w-lg text-base leading-relaxed text-mist-muted">{project.description}</p>
@@ -67,7 +67,7 @@ export function ProjectCard({ project, index, total, progress, stacked }: Projec
             {project.technologies.length > 0 && (
               <ul className="mt-6 flex flex-wrap gap-2" aria-label="Technologies">
                 {project.technologies.map((tech) => (
-                  <li key={tech} className="label-mono rounded-full bg-white/[0.05] px-3 py-1.5 text-[0.625rem] text-mist">
+                  <li key={tech} className="label-mono mc-slot px-3 py-1 text-white">
                     {tech}
                   </li>
                 ))}

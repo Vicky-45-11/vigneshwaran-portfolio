@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
-import { AnimatePresence, motion, useMotionValueEvent, useScroll, type MotionValue } from 'framer-motion';
-import { Menu, X } from 'lucide-react';
+import { AnimatePresence, motion, useMotionValueEvent, useScroll } from 'framer-motion';
+import { Menu, Moon, Sun, X } from 'lucide-react';
 import { EASE_EDITORIAL } from '../animations/easing';
 import { navLinks, personal } from '../../data/portfolio';
 import { GithubIcon } from '../icons/GithubIcon';
@@ -8,12 +8,28 @@ import { useReducedMotion } from '../../hooks/useReducedMotion';
 
 interface NavbarProps {
   activeSection: string;
-  progress: MotionValue<number>;
   /** Delay the entrance until the intro has gone. */
   ready: boolean;
+  night: boolean;
+  onToggleNight: () => void;
 }
 
-export function Navbar({ activeSection, progress, ready }: NavbarProps) {
+function DayNightButton({ night, onToggle }: { night: boolean; onToggle: () => void }) {
+  return (
+    <button
+      type="button"
+      onClick={onToggle}
+      aria-pressed={night}
+      aria-label={night ? 'Switch the world to day' : 'Switch the world to night'}
+      title={night ? 'Day' : 'Night'}
+      className="mc-btn flex h-10 w-10 items-center justify-center"
+    >
+      {night ? <Sun size={18} aria-hidden="true" /> : <Moon size={18} aria-hidden="true" />}
+    </button>
+  );
+}
+
+export function Navbar({ activeSection, ready, night, onToggleNight }: NavbarProps) {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const reducedMotion = useReducedMotion();
@@ -37,29 +53,25 @@ export function Navbar({ activeSection, progress, ready }: NavbarProps) {
 
   return (
     <>
-      <motion.div
-        className="fixed inset-x-0 top-0 z-[55] h-[2px] origin-left bg-gradient-to-r from-accent via-accent-light to-accent-cyan"
-        style={{ scaleX: progress }}
-        aria-hidden="true"
-      />
-
       <motion.header
         className={`fixed inset-x-0 top-0 z-50 transition-[background-color,border-color,backdrop-filter] duration-300 ${
-          scrolled || menuOpen ? 'border-b border-line bg-ink' : 'border-b border-transparent'
+          scrolled || menuOpen ? 'border-b-[3px] border-black bg-black/75 backdrop-blur-sm' : 'border-b-[3px] border-transparent'
         }`}
         initial={{ opacity: 0, y: reducedMotion ? 0 : -24 }}
         animate={ready ? { opacity: 1, y: 0 } : undefined}
         transition={{ duration: 0.7, ease: EASE_EDITORIAL }}
       >
         <nav className="container-editorial flex h-16 items-center justify-between sm:h-[4.5rem]" aria-label="Primary">
-          <a href="#hero" className="font-mono text-sm font-semibold tracking-[0.12em] text-mist transition-opacity hover:opacity-70">
+          <a href="#hero" className="flex items-center gap-3 font-pixel text-lg text-white transition-opacity [text-shadow:2px_2px_0_#3f3f3f] hover:opacity-80">
+            <span className="mc-item h-7 w-7" style={{ backgroundImage: 'var(--tex-grass-side)' }} aria-hidden="true" />
             <span className="sm:hidden">{personal.initials}</span>
             <span className="hidden sm:inline">
               VIGNESHWARAN<span className="text-accent-light">.DEV</span>
             </span>
           </a>
 
-          <ul className="hidden items-center gap-8 md:flex lg:gap-10">
+          <div className="hidden items-center gap-6 md:flex lg:gap-8">
+          <ul className="flex items-center gap-6 lg:gap-8">
             {navLinks.map((link) => {
               const active = activeSection === link.id;
               return (
@@ -67,15 +79,15 @@ export function Navbar({ activeSection, progress, ready }: NavbarProps) {
                   <a
                     href={`#${link.id}`}
                     aria-current={active ? 'true' : undefined}
-                    className={`relative py-2 text-xs font-medium tracking-[0.2em] transition-opacity duration-200 hover:opacity-100 ${
-                      active ? 'text-white opacity-100' : 'text-mist opacity-60'
+                    className={`relative py-2 font-pixel text-sm tracking-[0.08em] transition-opacity duration-200 [text-shadow:2px_2px_0_#000] hover:opacity-100 ${
+                      active ? 'text-[#ffff55] opacity-100' : 'text-white opacity-80'
                     }`}
                   >
                     {link.label}
                     {active && (
                       <motion.span
                         layoutId="nav-active"
-                        className="absolute -bottom-0.5 left-0 right-0 h-px bg-accent-light"
+                        className="absolute -bottom-0.5 left-0 right-0 h-[3px] bg-[#ffff55]"
                         transition={{ duration: 0.3, ease: EASE_EDITORIAL }}
                       />
                     )}
@@ -84,10 +96,14 @@ export function Navbar({ activeSection, progress, ready }: NavbarProps) {
               );
             })}
           </ul>
+          <DayNightButton night={night} onToggle={onToggleNight} />
+          </div>
 
+          <div className="flex items-center gap-2 md:hidden">
+          <DayNightButton night={night} onToggle={onToggleNight} />
           <button
             type="button"
-            className="-mr-2 flex h-11 w-11 items-center justify-center rounded-full text-mist md:hidden"
+            className="mc-btn flex h-11 w-11 items-center justify-center md:hidden"
             onClick={() => setMenuOpen((open) => !open)}
             aria-expanded={menuOpen}
             aria-controls="mobile-menu"
@@ -95,6 +111,7 @@ export function Navbar({ activeSection, progress, ready }: NavbarProps) {
           >
             {menuOpen ? <X size={22} /> : <Menu size={22} />}
           </button>
+          </div>
         </nav>
       </motion.header>
 
@@ -102,7 +119,7 @@ export function Navbar({ activeSection, progress, ready }: NavbarProps) {
         {menuOpen && (
           <motion.div
             id="mobile-menu"
-            className="fixed inset-0 z-40 flex flex-col bg-ink px-6 pb-10 pt-24 md:hidden"
+            className="mc-dirt-bg fixed inset-0 z-40 flex flex-col px-6 pb-10 pt-24 md:hidden"
             initial={{ opacity: 0, clipPath: 'inset(0 0 100% 0)' }}
             animate={{ opacity: 1, clipPath: 'inset(0 0 0% 0)' }}
             exit={{ opacity: 0, clipPath: 'inset(0 0 100% 0)' }}
@@ -119,7 +136,7 @@ export function Navbar({ activeSection, progress, ready }: NavbarProps) {
                   <a
                     href={`#${link.id}`}
                     onClick={() => setMenuOpen(false)}
-                    className="flex items-baseline gap-4 border-b border-line py-4 text-[clamp(2rem,10vw,3rem)] font-black leading-none tracking-tight text-mist"
+                    className="flex items-baseline gap-4 border-b-[3px] border-black/60 py-4 font-pixel text-[clamp(1.75rem,9vw,2.75rem)] leading-none text-white [text-shadow:3px_3px_0_#3f3f3f]"
                   >
                     <span className="label-mono text-accent-light">0{i + 1}</span>
                     {link.label}

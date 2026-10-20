@@ -20,10 +20,10 @@ export default {
           dim: '#646973',
         },
         accent: {
-          DEFAULT: '#3B82F6',
-          light: '#60A5FA',
-          cyan: '#22D3EE',
-          deep: '#0B1F3A',
+          DEFAULT: '#4CAF35',
+          light: '#7DDC5B',
+          cyan: '#4AEDD9',
+          deep: '#14320C',
         },
         line: {
           DEFAULT: 'rgba(215, 226, 234, 0.1)',
@@ -32,7 +32,19 @@ export default {
       },
       fontFamily: {
         sans: ['Geist', 'Inter', 'ui-sans-serif', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
-        mono: ['"JetBrains Mono"', 'ui-monospace', 'SFMono-Regular', 'Menlo', 'monospace'],
+        mono: ['VT323', 'ui-monospace', 'SFMono-Regular', 'Menlo', 'monospace'],
+        pixel: ['"Pixelify Sans"', 'VT323', 'ui-monospace', 'monospace'],
+      },
+      // Block games have no rounded corners. Circles (rounded-full) are kept.
+      borderRadius: {
+        none: '0',
+        sm: '0',
+        DEFAULT: '0',
+        md: '0',
+        lg: '0',
+        xl: '0',
+        '2xl': '0',
+        '3xl': '0',
       },
       transitionTimingFunction: {
         editorial: 'cubic-bezier(0.25, 0.1, 0.25, 1)',

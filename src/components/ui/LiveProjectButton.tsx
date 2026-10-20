@@ -8,14 +8,13 @@ interface LiveProjectButtonProps {
   icon?: ReactNode;
 }
 
-const base =
-  'inline-flex min-h-11 items-center gap-2 rounded-full border px-5 py-2.5 font-mono text-xs uppercase tracking-[0.16em] transition-colors duration-200';
+const base = 'mc-btn inline-flex min-h-11 items-center gap-2 px-5 py-2 text-sm uppercase';
 
-/** Outlined pill for project links. Only clickable when a real URL exists. */
+/** Stone block-game button for project links. Only clickable when a real URL exists. */
 export function LiveProjectButton({ href, label = 'LIVE PROJECT', icon }: LiveProjectButtonProps) {
   if (!href) {
     return (
-      <span className={`${base} cursor-not-allowed border-white/10 text-mist-dim`} aria-disabled="true" title="Link not available yet">
+      <span className={`${base} cursor-not-allowed opacity-50 hover:border-black hover:[filter:none]`} aria-disabled="true" title="Link not available yet">
         {icon}
         {label}
       </span>
@@ -27,7 +26,7 @@ export function LiveProjectButton({ href, label = 'LIVE PROJECT', icon }: LivePr
       href={href}
       target="_blank"
       rel="noopener noreferrer"
-      className={`${base} border-white/25 bg-transparent text-mist hover:border-white/50 hover:bg-white/[0.06]`}
+      className={base}
     >
       {icon}
       {label}

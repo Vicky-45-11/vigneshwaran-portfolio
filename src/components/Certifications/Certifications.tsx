@@ -28,7 +28,7 @@ export function Certifications() {
         <div className="mt-12 grid items-center gap-10 sm:mt-16 lg:grid-cols-12 lg:gap-12">
           <FadeIn className="relative h-[400px] sm:h-[540px] lg:col-span-7 lg:h-[600px]">
             <div
-              className="pointer-events-none absolute inset-x-[10%] top-1/2 h-2/3 -translate-y-1/2 rounded-full bg-[radial-gradient(circle,rgba(59,130,246,0.18),transparent_65%)]"
+              className="pointer-events-none absolute inset-x-[10%] top-1/2 h-2/3 -translate-y-1/2 rounded-full bg-[radial-gradient(circle,rgba(76,175,53,0.18),transparent_65%)]"
               aria-hidden="true"
             />
             <DepthCarousel
@@ -36,8 +36,8 @@ export function Certifications() {
               ariaLabel="Certifications"
               cardWidth={isSmall ? 250 : 320}
               cardHeight={isSmall ? 316 : 405}
-              radius={22}
-              tint="#0C0C0C"
+              radius={0}
+              tint="#0b0b0d"
               depth={220}
               spread={isSmall ? 50 : 90}
               tilt={22}
@@ -56,7 +56,7 @@ export function Certifications() {
             <p className="label-mono text-mist-muted">
               Drag, swipe or use the arrow keys · <span className="text-accent-light">{String(active + 1).padStart(2, '0')}</span> / {String(certifications.length).padStart(2, '0')}
             </p>
-            <ol className="mt-6 border-t border-line">
+            <ol className="mc-card mt-6 px-5">
               {certifications.map((cert, i) => {
                 const current = i === active;
                 return (
@@ -68,7 +68,7 @@ export function Certifications() {
                     <span className={`mt-1 font-mono text-sm ${current ? 'text-accent-light' : 'text-mist-dim'}`}>{String(i + 1).padStart(2, '0')}</span>
                     <span className="min-w-0 flex-1">
                       <span className="block text-lg font-semibold leading-snug sm:text-xl">{cert.name}</span>
-                      <span className="label-mono mt-1 block text-[0.625rem] text-mist-dim">{cert.area}</span>
+                      <span className="label-mono mt-1 block text-mist-dim">{cert.area}</span>
                     </span>
                     <Award
                       size={20}

@@ -15,11 +15,11 @@ const facts = [
 /** Floating snippet; the content describes the person, it is not a real file. */
 function CodePanel() {
   return (
-    <div className="w-64 rounded-2xl border border-line bg-ink-800/90 p-4 font-mono text-[0.7rem] leading-relaxed shadow-2xl shadow-black/50">
+    <div className="mc-card w-64 p-4 font-mono text-base leading-tight">
       <div className="mb-3 flex gap-1.5" aria-hidden="true">
-        <span className="h-2 w-2 rounded-full bg-white/20" />
-        <span className="h-2 w-2 rounded-full bg-white/20" />
-        <span className="h-2 w-2 rounded-full bg-white/20" />
+        <span className="h-2 w-2 bg-white/20" />
+        <span className="h-2 w-2 bg-white/20" />
+        <span className="h-2 w-2 bg-white/20" />
       </div>
       <p>
         <span className="text-accent-light">const</span> <span className="text-mist">developer</span> = {'{'}
@@ -36,27 +36,9 @@ function CodePanel() {
   );
 }
 
-function DatabaseShape() {
-  return (
-    <svg viewBox="0 0 120 140" className="w-24 text-accent-light/60" fill="none" stroke="currentColor" strokeWidth="1">
-      {[20, 60, 100].map((y) => (
-        <g key={y}>
-          <ellipse cx="60" cy={y} rx="44" ry="12" />
-          <path d={`M16 ${y} v24 a44 12 0 0 0 88 0 v-24`} />
-        </g>
-      ))}
-    </svg>
-  );
-}
-
-function GeometricShape() {
-  return (
-    <svg viewBox="0 0 100 100" className="w-28 text-mist/25" fill="none" stroke="currentColor" strokeWidth="0.8">
-      <polygon points="50,4 92,28 92,72 50,96 8,72 8,28" />
-      <path d="M50 4 L50 50 M92 28 L50 50 M92 72 L50 50 M50 96 L50 50 M8 72 L50 50 M8 28 L50 50" />
-      <polygon points="50,26 71,38 71,62 50,74 29,62 29,38" className="text-accent/50" stroke="currentColor" />
-    </svg>
-  );
+/** A single floating block, drawn with the site's generated textures. */
+function FloatingBlock({ texture, size }: { texture: string; size: number }) {
+  return <span className="mc-item block" style={{ width: size, height: size, backgroundImage: `var(--tex-${texture})` }} />;
 }
 
 export function About() {
@@ -68,31 +50,27 @@ export function About() {
           <CodePanel />
         </div>
         <div className="animate-float absolute bottom-[1%] right-[24%] [animation-delay:-3s]">
-          <DatabaseShape />
+          <FloatingBlock texture="bookshelf" size={84} />
         </div>
         <div className="absolute bottom-[2%] left-[3%] opacity-80">
-          <GeometricShape />
+          <FloatingBlock texture="diamond-ore" size={72} />
         </div>
       </div>
-      <div
-        className="pointer-events-none absolute -left-40 top-1/3 h-96 w-96 rounded-full bg-[radial-gradient(circle,rgba(34,211,238,0.08),transparent_65%)]"
-        aria-hidden="true"
-      />
 
       <div className="container-editorial relative">
         <SectionHeading index="01" label="Who I am" title="About me" id="about-title" />
 
         <div className="mt-14 grid gap-14 lg:mt-20 lg:grid-cols-12">
-          <div className="lg:col-span-8 xl:col-span-7">
+          <div className="mc-card p-6 sm:p-8 lg:col-span-8 xl:col-span-7">
             <AnimatedText
               text={personal.about}
               className="text-[clamp(1.5rem,3.4vw,2.75rem)] font-semibold leading-[1.2] tracking-tight text-mist"
             />
           </div>
 
-          <dl className="grid content-start gap-px self-start overflow-hidden rounded-2xl border border-line bg-line sm:grid-cols-2 lg:col-span-4 lg:grid-cols-1 xl:col-span-3 xl:col-start-10">
+          <dl className="grid content-start gap-[3px] self-start overflow-hidden border-[3px] border-black bg-black sm:grid-cols-2 lg:col-span-4 lg:grid-cols-1 xl:col-span-3 xl:col-start-10">
             {facts.map((fact, i) => (
-              <FadeIn key={fact.label} delay={i * 0.08} y={16} className="bg-ink p-5">
+              <FadeIn key={fact.label} delay={i * 0.08} y={16} className="bg-[#0e0e12]/90 p-5">
                 <dt className="label-mono text-mist-dim">{fact.label}</dt>
                 <dd className="mt-2 text-sm font-medium text-mist">{fact.value}</dd>
               </FadeIn>

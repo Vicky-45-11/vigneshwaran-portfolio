@@ -23,9 +23,9 @@ const stages = ['Tokenize', 'Patterns', 'Classify'];
 
 export function TextDetectorVisual() {
   return (
-    <div className="relative flex h-full w-full flex-col gap-4 overflow-hidden rounded-[1.25rem] border border-line bg-ink p-5 sm:p-6">
+    <div className="relative flex h-full w-full flex-col gap-4 overflow-hidden border border-line bg-ink p-5 sm:p-6">
       <div className="flex items-center justify-between">
-        <span className="label-mono text-[0.625rem] text-mist-muted">text_input.txt</span>
+        <span className="label-mono text-mist-muted">text_input.txt</span>
         <ol className="flex items-center gap-2">
           {stages.map((stage, i) => (
             <li key={stage} className="label-mono flex items-center gap-1.5 text-[0.6rem] text-mist-dim">
@@ -45,7 +45,7 @@ export function TextDetectorVisual() {
                   key={s}
                   style={{ width: `${w}%` }}
                   className={`h-2.5 rounded-full ${
-                    highlighted.has(`${l}-${s}`) ? 'bg-accent/70 shadow-[0_0_12px_rgba(59,130,246,0.6)]' : 'bg-white/10'
+                    highlighted.has(`${l}-${s}`) ? 'bg-accent/70 shadow-[0_0_12px_rgba(76,175,53,0.6)]' : 'bg-white/10'
                   }`}
                 />
               ))}

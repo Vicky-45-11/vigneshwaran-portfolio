@@ -14,9 +14,9 @@ export function Experience() {
             <li key={item.organization} className="grid gap-10 border-t border-line pt-10 lg:gap-14">
               <FadeIn>
                 <div className="flex items-start gap-4">
-                  <span className="mt-2 h-3 w-3 shrink-0 rounded-full bg-accent shadow-[0_0_0_6px_rgba(59,130,246,0.15)]" aria-hidden="true" />
+                  <span className="mt-2 h-3 w-3 shrink-0 rounded-full bg-accent shadow-[0_0_0_6px_rgba(76,175,53,0.15)]" aria-hidden="true" />
                   <div>
-                    <h3 className="text-[clamp(1.75rem,3.6vw,3rem)] font-black uppercase leading-[0.95] tracking-tight text-mist">
+                    <h3 className="text-[clamp(1.75rem,3.6vw,3rem)] font-pixel font-bold uppercase leading-[0.95] tracking-tight text-mist">
                       {item.organization}
                     </h3>
                     <p className="label-mono mt-4 text-mist-muted">{item.context}</p>

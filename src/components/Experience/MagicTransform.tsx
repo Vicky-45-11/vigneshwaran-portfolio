@@ -75,7 +75,7 @@ export function MagicTransform({ items }: MagicTransformProps) {
               return (
                 <motion.div
                   key={item.topic}
-                  className="absolute inset-x-0 top-1/2 mx-auto w-[86%] rounded-xl border border-line-strong bg-ink-700 p-4 shadow-[0_18px_40px_-20px_rgba(0,0,0,0.9)]"
+                  className="absolute inset-x-0 top-1/2 mx-auto w-[86%] mc-card p-4 shadow-[0_18px_40px_-20px_rgba(0,0,0,0.9)]"
                   style={{ zIndex: total - i, translateY: '-50%' }}
                   initial={false}
                   animate={{
@@ -100,10 +100,10 @@ export function MagicTransform({ items }: MagicTransformProps) {
                     <span className="label-mono truncate text-mist-muted">{item.topic}</span>
                   </div>
                   <div className="mt-4 space-y-2">
-                    <div className="h-1.5 w-full rounded-full bg-white/10" />
-                    <div className="h-1.5 w-[82%] rounded-full bg-white/10" />
-                    <div className="h-1.5 w-[64%] rounded-full bg-white/10" />
-                    <div className="h-1.5 w-[74%] rounded-full bg-white/[0.07]" />
+                    <div className="h-1.5 w-full bg-white/10" />
+                    <div className="h-1.5 w-[82%] bg-white/10" />
+                    <div className="h-1.5 w-[64%] bg-white/10" />
+                    <div className="h-1.5 w-[74%] bg-white/[0.07]" />
                   </div>
                 </motion.div>
               );
@@ -123,15 +123,15 @@ export function MagicTransform({ items }: MagicTransformProps) {
 
         {/* The core */}
         <div ref={coreRef} className="relative mx-auto h-24 w-24 sm:h-28 sm:w-28 lg:h-36 lg:w-36" aria-hidden="true">
-          <div className="magic-core absolute inset-0 rounded-full" />
-          <div className="absolute inset-[3px] flex items-center justify-center rounded-full bg-ink">
+          <div className="magic-core absolute inset-0" />
+          <div className="absolute inset-[4px] flex items-center justify-center bg-[#0e0e12]">
             <Sparkles size={wide ? 30 : 24} className="text-accent-light" />
           </div>
           {!reducedMotion &&
             shown > 0 && (
               <motion.div
                 key={`pulse-${shown}`}
-                className="absolute inset-0 rounded-full border-2"
+                className="absolute inset-0 border-2"
                 style={{ borderColor: PALETTE[(shown - 1) % PALETTE.length].from }}
                 initial={{ scale: 0.9, opacity: 0.9 }}
                 animate={{ scale: 1.9, opacity: 0 }}
@@ -148,7 +148,7 @@ export function MagicTransform({ items }: MagicTransformProps) {
               return (
                 <motion.span
                   key={`spark-${shown}-${k}`}
-                  className="absolute left-1/2 top-1/2 h-1.5 w-1.5 rounded-full"
+                  className="absolute left-1/2 top-1/2 h-1.5 w-1.5"
                   style={{ background: k % 2 ? c.from : c.to, boxShadow: `0 0 10px ${c.to}` }}
                   initial={{ x: 0, y: 0, opacity: 0, scale: 0.5 }}
                   animate={{ x: Math.cos(angle) * dist, y: Math.sin(angle) * dist, opacity: [0, 1, 0], scale: [0.5, 1.2, 0.4] }}
@@ -176,9 +176,9 @@ export function MagicTransform({ items }: MagicTransformProps) {
                 }
                 transition={{ duration: reducedMotion ? 0 : 0.7, delay: visible && !reducedMotion ? REVEAL_DELAY_S : 0, ease: [0.16, 1, 0.3, 1] }}
               >
-                <div className="relative h-full overflow-hidden rounded-[15px] bg-ink-800 p-5 sm:p-6">
+                <div className="relative h-full overflow-hidden bg-ink-800 p-5 sm:p-6">
                   <div
-                    className="pointer-events-none absolute -right-10 -top-10 h-32 w-32 rounded-full opacity-25 blur-2xl"
+                    className="pointer-events-none absolute -right-10 -top-10 h-32 w-32 opacity-25 blur-2xl"
                     style={{ background: c.to }}
                     aria-hidden="true"
                   />
@@ -200,7 +200,7 @@ export function MagicTransform({ items }: MagicTransformProps) {
         <motion.button
           type="button"
           onClick={() => setStep(0)}
-          className="label-mono mt-8 inline-flex items-center gap-2 rounded-full border border-line px-4 py-2 text-mist-muted transition-colors hover:border-line-strong hover:text-mist"
+          className="label-mono mt-8 inline-flex items-center gap-2 border border-line px-4 py-2 text-mist-muted transition-colors hover:border-line-strong hover:text-mist"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 1.2 }}

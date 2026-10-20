@@ -6,13 +6,13 @@ import { useReducedMotion } from '../../hooks/useReducedMotion';
 
 function Tile({ skill }: { skill: Skill }) {
   return (
-    <li className="mr-3 flex w-[13.5rem] shrink-0 items-center gap-4 rounded-2xl border border-line bg-ink-800 px-5 py-4 sm:mr-4 sm:w-60 sm:px-6 sm:py-5">
-      <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-line bg-ink-700 text-accent-light">
+    <li className="mr-3 flex w-[13.5rem] shrink-0 items-center gap-4 mc-card px-5 py-4 sm:mr-4 sm:w-60 sm:px-6 sm:py-5">
+      <span className="flex h-10 w-10 shrink-0 items-center justify-center mc-slot text-accent-light">
         <TechIcon name={skill.icon} size={20} />
       </span>
       <span className="min-w-0">
         <span className="block truncate text-base font-semibold text-mist">{skill.name}</span>
-        <span className="label-mono block text-[0.625rem] text-mist-muted">{skill.category}</span>
+        <span className="label-mono block text-mist-muted">{skill.category}</span>
       </span>
     </li>
   );

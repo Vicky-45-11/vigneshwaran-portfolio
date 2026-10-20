@@ -12,7 +12,7 @@ const bars = [0.5, 0.8, 0.35, 0.95, 0.6, 0.75, 0.4, 0.9, 0.55, 0.7];
 
 export function MusicPlayerVisual() {
   return (
-    <div className="relative flex h-full w-full flex-col gap-4 overflow-hidden rounded-[1.25rem] border border-line bg-ink p-5 sm:p-6">
+    <div className="relative flex h-full w-full flex-col gap-4 overflow-hidden border border-line bg-ink p-5 sm:p-6">
       <div className="flex items-center gap-2 rounded-full border border-line bg-ink-800 px-4 py-2 text-mist-dim">
         <Search size={14} aria-hidden="true" />
         <span className="h-2 w-28 rounded-full bg-white/10" />
@@ -28,7 +28,7 @@ export function MusicPlayerVisual() {
         ))}
       </div>
 
-      <div className="flex items-center gap-4 rounded-2xl border border-line bg-ink-800 p-3 sm:p-4">
+      <div className="flex items-center gap-4 mc-card p-3 sm:p-4">
         <div className="h-12 w-12 shrink-0 rounded-lg" style={{ background: covers[0] }} />
         <div className="min-w-0 flex-1">
           <span className="block h-2 w-24 rounded-full bg-white/25" />
