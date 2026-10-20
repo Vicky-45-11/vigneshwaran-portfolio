@@ -1,6 +1,6 @@
 import { useCallback, useState } from 'react';
 import { AnimatePresence, MotionConfig } from 'framer-motion';
-import { CustomCursor } from './components/Cursor/CustomCursor';
+import { PortfolioCursor } from './components/Cursor/PortfolioCursor';
 import { IntroScreen } from './components/Intro/IntroScreen';
 import { Navbar } from './components/Navbar/Navbar';
 import { Hero } from './components/Hero/Hero';
@@ -53,7 +53,7 @@ export function App() {
         Skip to content
       </a>
 
-      <CustomCursor />
+      {!introOpen && <PortfolioCursor />}
 
       <AnimatePresence custom={introSkipped}>
         {introOpen && <IntroScreen onFinish={finishIntro} />}

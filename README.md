@@ -25,16 +25,18 @@ src/
   components/
     3d/            NeuralOrb (lazy three.js scene + CSS fallback)
     animations/    FadeIn, Magnet, AnimatedText
+    Cursor/        SplashCursor (React Bits WebGL fluid cursor) + PortfolioCursor wrapper
     ui/            ContactButton, LiveProjectButton, SectionHeading, TechIcon
     Intro/ Navbar/ Hero/ Marquee/ About/ Focus/ Skills/
     Projects/ Experience/ Education/ Certifications/ Contact/ Footer/
   data/portfolio.ts
-  hooks/           useReducedMotion, useMousePosition, useScrollProgress, useMediaQuery
+  hooks/           useReducedMotion, useMousePosition (useFinePointer), useScrollProgress, useMediaQuery
 ```
 
 ## Performance notes
 
 - three.js is loaded with a dynamic import only when the orb is about to render, and is split into its own chunks (`vite.config.ts`), so it is not part of the initial download.
 - The orb's render loop pauses when it is off screen or the tab is hidden, and caps the pixel ratio.
-- Visitors who prefer reduced motion get static content, no custom cursor and a scrollable (non-animated) technology strip.
+- Visitors who prefer reduced motion get static content, no fluid cursor and a scrollable (non-animated) technology strip.
 - If WebGL is unavailable, a CSS version of the orb is shown instead.
+- The fluid cursor (`SplashCursor`) is lazy-loaded after the intro, uses lower quality on touch devices, and draws nothing where WebGL2 is unavailable. Its canvas ignores pointer events, so links and buttons work as normal.

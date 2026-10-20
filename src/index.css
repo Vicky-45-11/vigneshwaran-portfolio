@@ -60,12 +60,6 @@
     outline-offset: 3px;
     border-radius: 6px;
   }
-
-  /* Hide the native cursor only while the custom cursor is mounted. */
-  html.has-custom-cursor,
-  html.has-custom-cursor * {
-    cursor: none !important;
-  }
 }
 
 @layer components {
