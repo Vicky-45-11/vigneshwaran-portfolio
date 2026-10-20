@@ -1,136 +1,100 @@
-import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import {
-  Code,
-  Terminal,
-  Database,
-  Cpu,
-  Layers,
-  GitBranch,
-  Box,
-  Server,
-} from 'lucide-react';
-import { PORTFOLIO_DATA } from '../../data/portfolio';
+import { useMemo, useState } from 'react';
+import { AnimatePresence, motion } from 'framer-motion';
+import { EASE_EDITORIAL } from '../animations/easing';
+import { SectionHeading } from '../ui/SectionHeading';
+import { TechIcon } from '../ui/TechIcon';
+import { skillCategories, skills, type SkillCategory } from '../../data/portfolio';
+import { useReducedMotion } from '../../hooks/useReducedMotion';
+import { CATEGORY_COLOR, CATEGORY_LABEL } from './categoryStyle';
+import { CraftingTable } from './CraftingTable';
 
-export const Skills: React.FC = () => {
-  const [activeCategory, setActiveCategory] = useState<string>('ALL');
+type Filter = 'ALL' | SkillCategory;
+const filters: Filter[] = ['ALL', ...skillCategories];
 
-  const categories = [
-    'ALL',
-    'PROGRAMMING',
-    'FRONTEND',
-    'BACKEND',
-    'DATABASES',
-    'AI',
-    'TOOLS',
-    'CORE',
-  ];
+export function Skills() {
+  const [filter, setFilter] = useState<Filter>('ALL');
+  const reducedMotion = useReducedMotion();
 
-  const filteredSkills =
-    activeCategory === 'ALL'
-      ? PORTFOLIO_DATA.skills
-      : PORTFOLIO_DATA.skills.filter((s) => s.category === activeCategory);
-
-  const getSkillIcon = (category: string, name: string) => {
-    switch (category) {
-      case 'AI':
-        return <Cpu size={18} className="text-cyan-400 group-hover:rotate-12 transition-transform" />;
-      case 'DATABASES':
-        return <Database size={18} className="text-indigo-400 group-hover:scale-110 transition-transform" />;
-      case 'FRONTEND':
-        return <Layers size={18} className="text-blue-400 group-hover:translate-y-[-2px] transition-transform" />;
-      case 'BACKEND':
-        return <Server size={18} className="text-emerald-400 group-hover:translate-x-0.5 transition-transform" />;
-      case 'TOOLS':
-        return name === 'Docker' ? (
-          <Box size={18} className="text-sky-400 group-hover:rotate-6 transition-transform" />
-        ) : (
-          <GitBranch size={18} className="text-amber-400 group-hover:rotate-12 transition-transform" />
-        );
-      case 'CORE':
-        return <Terminal size={18} className="text-purple-400 group-hover:scale-110 transition-transform" />;
-      default:
-        return <Code size={18} className="text-blue-400 group-hover:rotate-6 transition-transform" />;
-    }
-  };
+  const visible = useMemo(() => (filter === 'ALL' ? skills : skills.filter((s) => s.category === filter)), [filter]);
+  const count = (f: Filter) => (f === 'ALL' ? skills.length : skills.filter((s) => s.category === f).length);
 
   return (
-    <section id="skills" className="py-24 relative overflow-hidden">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        {/* Section Header */}
-        <div className="mb-12 text-left">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 font-mono text-xs tracking-widest uppercase mb-3">
-            <span>02. SKILLS & TECH</span>
+    <section
+      id="skills"
+      aria-labelledby="skills-title"
+      className="relative z-10 py-24 sm:py-32"
+    >
+      <div className="container-editorial">
+        <SectionHeading index="03" label="Skill explorer" title="Skills" id="skills-title" />
+
+        <div className="mt-12 sm:mt-16" role="group" aria-label="Filter skills by category">
+          <ul className="-mx-4 flex gap-2 overflow-x-auto px-4 pb-2 sm:mx-0 sm:flex-wrap sm:overflow-visible sm:px-0">
+            {filters.map((f) => {
+              const active = f === filter;
+              return (
+                <li key={f} className="shrink-0">
+                  <button
+                    type="button"
+                    aria-pressed={active}
+                    onClick={() => setFilter(f)}
+                    className={`mc-btn inline-flex min-h-11 items-center gap-2 px-4 text-sm ${active ? 'mc-btn--pressed' : ''}`}
+                  >
+                    {f}
+                    <span className="text-[#ffff55]">{count(f)}</span>
+                  </button>
+                </li>
+              );
+            })}
+          </ul>
+        </div>
+
+        <p className="sr-only" aria-live="polite">
+          Showing {visible.length} skills{filter === 'ALL' ? '' : ` in ${CATEGORY_LABEL[filter]}`}.
+        </p>
+
+        <div className="mc-inventory mt-8 p-3 sm:p-5">
+          <div className="flex flex-wrap items-baseline justify-between gap-2 px-1">
+            <p className="font-pixel text-lg text-[#3f3f3f]">Inventory</p>
+            <p className="label-mono text-[#4a4a4a] [text-shadow:none]">
+              Total items: {skills.length} · Categories: {skillCategories.length}
+            </p>
           </div>
-
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight text-[#F5F5F5] flex items-center gap-4">
-            <span>Technical Proficiency</span>
-            <span className="hidden sm:block h-[1px] flex-1 max-w-[200px] bg-gradient-to-r from-blue-500/40 to-transparent" />
-          </h2>
-          <p className="mt-2 text-[#A1A1AA] text-sm sm:text-base font-mono">
-            Languages, frameworks, databases and tools I work with.
-          </p>
-        </div>
-
-        {/* Filter Tabs */}
-        <div className="flex items-center gap-2 overflow-x-auto pb-4 mb-8 scrollbar-none">
-          {categories.map((cat) => {
-            const isSelected = activeCategory === cat;
-            return (
-              <button
-                key={cat}
-                onClick={() => setActiveCategory(cat)}
-                className={`px-4 py-2 rounded-full text-xs font-mono tracking-wider transition-all duration-200 whitespace-nowrap ${
-                  isSelected
-                    ? 'bg-blue-600 text-white shadow-md shadow-blue-600/30 border border-blue-500'
-                    : 'bg-[#111111]/80 text-[#A1A1AA] hover:text-white border border-white/[0.08] hover:border-white/20'
-                }`}
-              >
-                {cat}
-              </button>
-            );
-          })}
-        </div>
-
-        {/* Skill Cards Grid */}
-        <motion.div layout className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3.5 sm:gap-4">
-          <AnimatePresence>
-            {filteredSkills.map((skill) => (
-              <motion.div
-                key={skill.name}
-                layout
-                initial={{ opacity: 0, scale: 0.92 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.92 }}
-                transition={{ duration: 0.25 }}
-                className="group relative p-4 rounded-xl bg-[#111111]/80 hover:bg-[#171717] border border-white/[0.07] hover:border-blue-500/40 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-blue-500/10 cursor-default select-none"
-              >
-                <div className="flex items-center justify-between mb-3">
-                  <div className="p-2 rounded-lg bg-white/[0.04] border border-white/[0.05] group-hover:bg-blue-500/10 group-hover:border-blue-500/25 transition-colors">
-                    {getSkillIcon(skill.category, skill.name)}
-                  </div>
-                  <span className="text-[10px] font-mono text-[#71717A] tracking-wider uppercase group-hover:text-blue-400/80 transition-colors">
-                    {skill.category}
+          <motion.ul layout={!reducedMotion} className="mt-3 grid grid-cols-[repeat(auto-fill,minmax(6.25rem,1fr))] gap-1.5 sm:grid-cols-[repeat(auto-fill,minmax(7.5rem,1fr))]">
+            <AnimatePresence mode="popLayout" initial={false}>
+              {visible.map((skill) => (
+                <motion.li
+                  key={skill.name}
+                  layout={!reducedMotion}
+                  initial={{ opacity: 0, scale: reducedMotion ? 1 : 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: reducedMotion ? 1 : 0.9 }}
+                  transition={{ duration: 0.25, ease: EASE_EDITORIAL }}
+                  className="mc-slot-light group relative flex aspect-square flex-col items-center justify-center gap-1.5 p-1.5 text-center"
+                  tabIndex={0}
+                  aria-label={`${skill.name}, ${CATEGORY_LABEL[skill.category]}`}
+                >
+                  <span className="flex h-10 w-10 items-center justify-center text-white sm:h-12 sm:w-12" style={{ backgroundColor: CATEGORY_COLOR[skill.category] }} aria-hidden="true">
+                    <span className="mc-item flex h-full w-full items-center justify-center bg-transparent">
+                      <TechIcon name={skill.icon} size={22} />
+                    </span>
                   </span>
-                </div>
-
-                <div className="font-bold text-sm text-[#F5F5F5] group-hover:text-white transition-colors tracking-tight">
-                  {skill.name}
-                </div>
-
-                {/* Subtle bottom glowing accent bar on hover */}
-                <div className="absolute bottom-0 left-3 right-3 h-[2px] bg-gradient-to-r from-transparent via-blue-500 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-              </motion.div>
-            ))}
-          </AnimatePresence>
-        </motion.div>
-
-        {/* Bottom Context Info */}
-        <div className="mt-8 flex items-center justify-between text-xs font-mono text-[#71717A] px-2">
-          <span>{filteredSkills.length} Technologies Listed</span>
-          <span className="hidden sm:inline">Active category: {activeCategory}</span>
+                  <span className="line-clamp-2 font-mono text-[1.05rem] leading-[0.95] text-[#1e1e1e]" aria-hidden="true">
+                    {skill.name}
+                  </span>
+                  <span
+                    className="mc-tooltip pointer-events-none absolute bottom-full left-1/2 z-20 mb-2 hidden w-max max-w-[14rem] -translate-x-1/2 px-2.5 py-1.5 text-left group-hover:block group-focus:block"
+                    aria-hidden="true"
+                  >
+                    <span className="block font-pixel text-sm text-white">{skill.name}</span>
+                    <span className="block font-mono text-base leading-tight text-[#5555ff]">{CATEGORY_LABEL[skill.category]}</span>
+                  </span>
+                </motion.li>
+              ))}
+            </AnimatePresence>
+          </motion.ul>
         </div>
+        <CraftingTable />
       </div>
     </section>
   );
-};
+}

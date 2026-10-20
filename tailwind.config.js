@@ -7,40 +7,48 @@ export default {
   theme: {
     extend: {
       colors: {
-        bg: {
-          primary: '#050505',
-          secondary: '#0B0B0B',
-          surface: '#111111',
-          elevated: '#171717',
+        ink: {
+          DEFAULT: '#0C0C0C',
+          900: '#0C0C0C',
+          800: '#111111',
+          700: '#171717',
+          600: '#1F1F1F',
         },
-        border: {
-          subtle: 'rgba(255, 255, 255, 0.08)',
-          glow: 'rgba(59, 130, 246, 0.3)',
+        mist: {
+          DEFAULT: '#D7E2EA',
+          muted: '#9CA3AF',
+          dim: '#646973',
         },
         accent: {
-          DEFAULT: '#3B82F6',
-          light: '#60A5FA',
-          cyan: '#22D3EE',
+          DEFAULT: '#4CAF35',
+          light: '#7DDC5B',
+          cyan: '#4AEDD9',
+          deep: '#14320C',
         },
-        text: {
-          primary: '#F5F5F5',
-          secondary: '#A1A1AA',
-          muted: '#71717A',
-        }
+        line: {
+          DEFAULT: 'rgba(215, 226, 234, 0.1)',
+          strong: 'rgba(215, 226, 234, 0.2)',
+        },
       },
       fontFamily: {
-        sans: ['Geist', 'Plus Jakarta Sans', 'Inter', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
-        mono: ['JetBrains Mono', 'Fira Code', 'monospace'],
+        sans: ['Geist', 'Inter', 'ui-sans-serif', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
+        mono: ['VT323', 'ui-monospace', 'SFMono-Regular', 'Menlo', 'monospace'],
+        pixel: ['"Pixelify Sans"', 'VT323', 'ui-monospace', 'monospace'],
       },
-      animation: {
-        'pulse-subtle': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
-        'spin-slow': 'spin 20s linear infinite',
+      // Block games have no rounded corners. Circles (rounded-full) are kept.
+      borderRadius: {
+        none: '0',
+        sm: '0',
+        DEFAULT: '0',
+        md: '0',
+        lg: '0',
+        xl: '0',
+        '2xl': '0',
+        '3xl': '0',
       },
-      boxShadow: {
-        'glow-sm': '0 0 15px rgba(59, 130, 246, 0.2)',
-        'glow-md': '0 0 30px rgba(59, 130, 246, 0.3)',
-        'glow-lg': '0 0 50px rgba(59, 130, 246, 0.4)',
-      }
+      transitionTimingFunction: {
+        editorial: 'cubic-bezier(0.25, 0.1, 0.25, 1)',
+      },
     },
   },
   plugins: [],

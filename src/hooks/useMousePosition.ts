@@ -1,26 +1,19 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
-export function useMousePosition() {
-  const [mousePosition, setMousePosition] = useState({ x: -100, y: -100 });
-  const [isPointerDevice, setIsPointerDevice] = useState(false);
+const FINE_POINTER_QUERY = '(hover: hover) and (pointer: fine)';
+
+/** True on devices with a precise hovering pointer (a mouse or trackpad). */
+export function useFinePointer(): boolean {
+  const [isFine, setIsFine] = useState(
+    () => typeof window !== 'undefined' && window.matchMedia(FINE_POINTER_QUERY).matches,
+  );
 
   useEffect(() => {
-    // Only track if device supports fine pointing (mouse, not touch-only)
-    const mediaQuery = window.matchMedia('(pointer: fine)');
-    setIsPointerDevice(mediaQuery.matches);
-
-    const handleMouseMove = (e: MouseEvent) => {
-      setMousePosition({ x: e.clientX, y: e.clientY });
-    };
-
-    if (mediaQuery.matches) {
-      window.addEventListener('mousemove', handleMouseMove);
-    }
-
-    return () => {
-      window.removeEventListener('mousemove', handleMouseMove);
-    };
+    const query = window.matchMedia(FINE_POINTER_QUERY);
+    const onChange = (e: MediaQueryListEvent) => setIsFine(e.matches);
+    query.addEventListener('change', onChange);
+    return () => query.removeEventListener('change', onChange);
   }, []);
 
-  return { ...mousePosition, isPointerDevice };
+  return isFine;
 }

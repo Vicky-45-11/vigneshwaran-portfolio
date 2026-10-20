@@ -1,204 +1,207 @@
-import React, { useState } from 'react';
-import { Mail, Phone, MapPin, Send, Copy, Check, ArrowUpRight } from 'lucide-react';
-import { PORTFOLIO_DATA } from '../../data/portfolio';
+import { useState, type ChangeEvent, type FormEvent } from 'react';
+import { ArrowUpRight, Check, Copy, Mail, Phone } from 'lucide-react';
+import { FadeIn } from '../animations/FadeIn';
+import { ContactButton } from '../ui/ContactButton';
 import { GithubIcon } from '../icons/GithubIcon';
+import { personal } from '../../data/portfolio';
 
-export const Contact: React.FC = () => {
+type Field = 'name' | 'email' | 'subject' | 'message';
+type FormState = Record<Field, string>;
+
+const EMPTY: FormState = { name: '', email: '', subject: '', message: '' };
+const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+
+function validate(values: FormState): Partial<Record<Field, string>> {
+  const errors: Partial<Record<Field, string>> = {};
+  if (!values.name.trim()) errors.name = 'Please enter your name.';
+  if (!values.email.trim()) errors.email = 'Please enter your email address.';
+  else if (!EMAIL_PATTERN.test(values.email.trim())) errors.email = 'Please enter a valid email address.';
+  if (!values.subject.trim()) errors.subject = 'Please add a subject.';
+  if (!values.message.trim()) errors.message = 'Please write a message.';
+  return errors;
+}
+
+/** Builds a mailto: URL with every user-supplied value percent-encoded. */
+function buildMailto(values: FormState): string {
+  const subject = encodeURIComponent(values.subject.trim());
+  const body = encodeURIComponent(
+    `${values.message.trim()}\n\n— ${values.name.trim()}\n${values.email.trim()}`,
+  );
+  return `mailto:${personal.email}?subject=${subject}&body=${body}`;
+}
+
+const channels = [
+  { label: 'Email', value: personal.email, href: `mailto:${personal.email}`, icon: Mail, external: false },
+  { label: 'Phone', value: personal.phone, href: `tel:+91${personal.phone}`, icon: Phone, external: false },
+  { label: 'GitHub', value: `github.com/${personal.githubHandle}`, href: personal.github, icon: GithubIcon, external: true },
+];
+
+export function Contact() {
+  const [values, setValues] = useState<FormState>(EMPTY);
+  const [errors, setErrors] = useState<Partial<Record<Field, string>>>({});
+  const [opened, setOpened] = useState(false);
   const [copied, setCopied] = useState(false);
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    subject: '',
-    message: '',
-  });
 
-  const handleCopyEmail = () => {
-    navigator.clipboard.writeText(PORTFOLIO_DATA.personal.email);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2500);
+  const onChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const field = e.target.name as Field;
+    setValues((v) => ({ ...v, [field]: e.target.value }));
+    if (errors[field]) setErrors((err) => ({ ...err, [field]: undefined }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const onSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const subject = encodeURIComponent(formData.subject || `Inquiry from ${formData.name}`);
-    const body = encodeURIComponent(
-      `Hi Vigneshwaran,\n\n${formData.message}\n\nFrom: ${formData.name} (${formData.email})`
-    );
-    window.location.href = `mailto:${PORTFOLIO_DATA.personal.email}?subject=${subject}&body=${body}`;
+    const found = validate(values);
+    setErrors(found);
+    const firstInvalid = (Object.keys(found) as Field[])[0];
+    if (firstInvalid) {
+      document.getElementById(`contact-${firstInvalid}`)?.focus();
+      return;
+    }
+    window.location.href = buildMailto(values);
+    setOpened(true);
   };
+
+  const copyEmail = async () => {
+    try {
+      await navigator.clipboard.writeText(personal.email);
+      setCopied(true);
+      window.setTimeout(() => setCopied(false), 2000);
+    } catch {
+      // Clipboard can be blocked; the address is still visible and selectable.
+    }
+  };
+
+  const fieldClass = (field: Field) =>
+    `mt-2 w-full border-[3px] bg-black px-4 py-3 text-base text-white placeholder:text-mist-dim transition-colors duration-200 focus:outline-none focus-visible:border-white focus-visible:outline-none ${
+      errors[field] ? 'border-red-500' : 'border-[#a0a0a0] hover:border-[#d0d0d0]'
+    }`;
+
+  const renderField = (field: Field, label: string, type: 'text' | 'email' | 'textarea', autoComplete?: string) => (
+    <div className={field === 'message' ? 'sm:col-span-2' : undefined}>
+      <label htmlFor={`contact-${field}`} className="label-mono text-mist-muted">
+        {label} <span aria-hidden="true" className="text-accent-light">*</span>
+      </label>
+      {type === 'textarea' ? (
+        <textarea
+          id={`contact-${field}`}
+          name={field}
+          rows={6}
+          required
+          value={values[field]}
+          onChange={onChange}
+          aria-invalid={Boolean(errors[field])}
+          aria-describedby={errors[field] ? `contact-${field}-error` : undefined}
+          className={`${fieldClass(field)} resize-y`}
+        />
+      ) : (
+        <input
+          id={`contact-${field}`}
+          name={field}
+          type={type}
+          required
+          autoComplete={autoComplete}
+          value={values[field]}
+          onChange={onChange}
+          aria-invalid={Boolean(errors[field])}
+          aria-describedby={errors[field] ? `contact-${field}-error` : undefined}
+          className={fieldClass(field)}
+        />
+      )}
+      {errors[field] && (
+        <p id={`contact-${field}-error`} className="mt-2 text-sm text-red-300">
+          {errors[field]}
+        </p>
+      )}
+    </div>
+  );
 
   return (
-    <section id="contact" className="py-24 relative overflow-hidden">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        {/* Section Header */}
-        <div className="mb-16 text-left">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 font-mono text-xs tracking-widest uppercase mb-3">
-            <span>07. GET IN TOUCH</span>
-          </div>
-
-          <h2 className="text-3xl sm:text-4xl md:text-6xl font-black tracking-tight text-[#F5F5F5] uppercase">
+    <section id="contact" aria-labelledby="contact-title" className="relative overflow-hidden border-t border-line py-24 sm:py-36">
+      <div
+        className="pointer-events-none absolute left-1/2 top-0 h-[60vmax] w-[60vmax] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(circle,rgba(160,90,255,0.16),transparent_60%)]"
+        aria-hidden="true"
+      />
+      <div className="container-editorial relative">
+        <FadeIn y={12} duration={0.5}>
+          <p className="label-mono flex items-center gap-3 text-white [text-shadow:2px_2px_0_#000]">
+            <span className="text-[#ffff55]">08</span>
+            <span className="h-[3px] w-10 bg-white/40" aria-hidden="true" />
+            Contact
+          </p>
+        </FadeIn>
+        <FadeIn y={40} duration={0.9}>
+          <h2
+            id="contact-title"
+            className="hero-heading hero-heading--end mt-6 text-[clamp(2.4rem,8.5vw,8.5rem)] font-bold uppercase leading-[0.92]"
+          >
             Let's build something great.
           </h2>
-          <p className="mt-3 text-[#A1A1AA] text-base sm:text-lg max-w-2xl font-sans">
-            Have an opportunity, collaboration or interesting problem in mind? Let's connect.
-          </p>
-        </div>
+        </FadeIn>
+        <FadeIn delay={0.1} className="mc-card mt-8 max-w-xl p-5 text-lg text-white sm:text-xl">
+          Have an idea, project, or opportunity? Let's connect.
+        </FadeIn>
 
-        {/* Two-Column Contact Layout */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
-          {/* Left Column: Direct Contact Information (5 cols) */}
-          <div className="lg:col-span-5 space-y-6">
-            {/* Email Card with Copy button */}
-            <div className="p-6 rounded-2xl bg-[#111111]/80 border border-white/[0.08] backdrop-blur-md">
-              <div className="flex items-center justify-between mb-3">
-                <span className="text-[11px] font-mono text-[#71717A] uppercase tracking-wider">
-                  Direct Email
-                </span>
-                <button
-                  onClick={handleCopyEmail}
-                  className="inline-flex items-center gap-1.5 text-xs font-mono text-blue-400 hover:text-blue-300 transition-colors"
-                >
-                  {copied ? <Check size={14} className="text-emerald-400" /> : <Copy size={14} />}
-                  <span>{copied ? 'Copied!' : 'Copy'}</span>
-                </button>
-              </div>
-
-              <a
-                href={`mailto:${PORTFOLIO_DATA.personal.email}`}
-                className="text-base sm:text-lg font-bold text-[#F5F5F5] hover:text-blue-400 transition-colors break-all flex items-center gap-2"
-              >
-                <Mail size={18} className="text-blue-400 shrink-0" />
-                <span>{PORTFOLIO_DATA.personal.email}</span>
-              </a>
-            </div>
-
-            {/* Phone Card */}
-            <div className="p-6 rounded-2xl bg-[#111111]/80 border border-white/[0.08] backdrop-blur-md">
-              <span className="block text-[11px] font-mono text-[#71717A] uppercase tracking-wider mb-2">
-                Phone Contact
-              </span>
-              <a
-                href={`tel:${PORTFOLIO_DATA.personal.phone}`}
-                className="text-base sm:text-lg font-bold text-[#F5F5F5] hover:text-blue-400 transition-colors flex items-center gap-2"
-              >
-                <Phone size={18} className="text-cyan-400 shrink-0" />
-                <span>+91 {PORTFOLIO_DATA.personal.phone}</span>
-              </a>
-            </div>
-
-            {/* Location & GitHub */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div className="p-5 rounded-2xl bg-[#111111]/80 border border-white/[0.08] backdrop-blur-md">
-                <span className="block text-[11px] font-mono text-[#71717A] uppercase tracking-wider mb-1.5">
-                  Location
-                </span>
-                <div className="flex items-center gap-2 text-sm font-bold text-[#F5F5F5]">
-                  <MapPin size={16} className="text-emerald-400 shrink-0" />
-                  <span>{PORTFOLIO_DATA.personal.location}</span>
-                </div>
-              </div>
-
-              <a
-                href={PORTFOLIO_DATA.personal.github}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="p-5 rounded-2xl bg-[#111111]/80 hover:bg-[#161616] border border-white/[0.08] hover:border-blue-500/40 transition-all backdrop-blur-md group"
-              >
-                <div className="flex items-center justify-between mb-1.5">
-                  <span className="text-[11px] font-mono text-[#71717A] uppercase tracking-wider">
-                    GitHub
-                  </span>
-                  <ArrowUpRight size={14} className="text-[#71717A] group-hover:text-blue-400 transition-colors" />
-                </div>
-                <div className="flex items-center gap-2 text-sm font-bold text-[#F5F5F5] group-hover:text-blue-300 transition-colors">
-                  <GithubIcon size={16} className="text-blue-400 shrink-0" />
-                  <span>vignesh45-eng</span>
-                </div>
-              </a>
-            </div>
-          </div>
-
-          {/* Right Column: Contact Message Form (7 cols) */}
-          <div className="lg:col-span-7">
-            <form
-              onSubmit={handleSubmit}
-              className="p-6 sm:p-8 rounded-3xl bg-[#111111]/80 border border-white/[0.08] backdrop-blur-md space-y-5"
+        <div className="mt-16 grid gap-12 lg:mt-24 lg:grid-cols-12">
+          <FadeIn className="lg:col-span-5">
+            <ul className="mc-card px-5">
+              {channels.map(({ label, value, href, icon: Icon, external }) => (
+                <li key={label} className="border-b-[3px] border-black/60 last:border-b-0">
+                  <a
+                    href={href}
+                    {...(external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+                    className="group flex items-center gap-4 py-6"
+                  >
+                    <span className="mc-slot flex h-11 w-11 shrink-0 items-center justify-center text-accent-cyan">
+                      <Icon size={18} aria-hidden="true" />
+                    </span>
+                    <span className="min-w-0 flex-1">
+                      <span className="label-mono block text-mist-dim">{label}</span>
+                      <span className="mt-1 block break-all text-base text-mist transition-colors group-hover:text-white sm:text-lg">
+                        {value}
+                      </span>
+                    </span>
+                    <ArrowUpRight size={20} aria-hidden="true" className="shrink-0 text-mist-dim transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-mist" />
+                    {external && <span className="sr-only">(opens in a new tab)</span>}
+                  </a>
+                </li>
+              ))}
+            </ul>
+            <button
+              type="button"
+              onClick={copyEmail}
+              className="mc-btn mt-6 inline-flex min-h-11 items-center gap-2 px-4 text-base"
             >
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                <div>
-                  <label className="block text-xs font-mono text-[#A1A1AA] uppercase tracking-wider mb-2">
-                    Your Name
-                  </label>
-                  <input
-                    type="text"
-                    required
-                    value={formData.name}
-                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                    placeholder="e.g. Alex Rivera"
-                    className="w-full px-4 py-3 rounded-xl bg-black/50 border border-white/[0.08] focus:border-blue-500 text-sm text-[#F5F5F5] placeholder-[#555] focus:outline-none transition-colors"
-                  />
-                </div>
+              {copied ? <Check size={14} aria-hidden="true" /> : <Copy size={14} aria-hidden="true" />}
+              {copied ? 'Email copied' : 'Copy email'}
+            </button>
+            <span className="sr-only" aria-live="polite">
+              {copied ? 'Email address copied to clipboard.' : ''}
+            </span>
+            <p className="label-mono mt-8 text-white/70">{personal.location}</p>
+          </FadeIn>
 
-                <div>
-                  <label className="block text-xs font-mono text-[#A1A1AA] uppercase tracking-wider mb-2">
-                    Your Email
-                  </label>
-                  <input
-                    type="email"
-                    required
-                    value={formData.email}
-                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                    placeholder="e.g. alex@example.com"
-                    className="w-full px-4 py-3 rounded-xl bg-black/50 border border-white/[0.08] focus:border-blue-500 text-sm text-[#F5F5F5] placeholder-[#555] focus:outline-none transition-colors"
-                  />
-                </div>
+          <FadeIn delay={0.1} className="lg:col-span-7">
+            <form noValidate onSubmit={onSubmit} className="mc-card grid gap-5 p-5 sm:grid-cols-2 sm:p-7" aria-describedby="contact-form-note">
+              {renderField('name', 'Name', 'text', 'name')}
+              {renderField('email', 'Email', 'email', 'email')}
+              <div className="sm:col-span-2">{renderField('subject', 'Subject', 'text')}</div>
+              {renderField('message', 'Message', 'textarea')}
+
+              <div className="flex flex-col gap-5 sm:col-span-2 sm:flex-row sm:items-center sm:justify-between">
+                <p id="contact-form-note" className="max-w-sm text-sm leading-relaxed text-mist-muted">
+                  This site has no mail server. Submitting opens your email app with the message filled in, ready for you to send.
+                </p>
+                <ContactButton type="submit" />
               </div>
-
-              <div>
-                <label className="block text-xs font-mono text-[#A1A1AA] uppercase tracking-wider mb-2">
-                  Subject
-                </label>
-                <input
-                  type="text"
-                  required
-                  value={formData.subject}
-                  onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
-                  placeholder="e.g. Software Development Project Collaboration"
-                  className="w-full px-4 py-3 rounded-xl bg-black/50 border border-white/[0.08] focus:border-blue-500 text-sm text-[#F5F5F5] placeholder-[#555] focus:outline-none transition-colors"
-                />
-              </div>
-
-              <div>
-                <label className="block text-xs font-mono text-[#A1A1AA] uppercase tracking-wider mb-2">
-                  Message
-                </label>
-                <textarea
-                  rows={4}
-                  required
-                  value={formData.message}
-                  onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                  placeholder="Describe your project, question, or opportunity..."
-                  className="w-full px-4 py-3 rounded-xl bg-black/50 border border-white/[0.08] focus:border-blue-500 text-sm text-[#F5F5F5] placeholder-[#555] focus:outline-none transition-colors resize-none"
-                />
-              </div>
-
-              <div className="pt-2 flex flex-col sm:flex-row items-center justify-between gap-4">
-                <button
-                  type="submit"
-                  className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-7 py-3.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-semibold text-sm tracking-wide shadow-lg shadow-blue-600/25 transition-all active:scale-[0.98]"
-                >
-                  <span>SEND MESSAGE</span>
-                  <Send size={15} />
-                </button>
-
-                <span className="text-[11px] font-mono text-[#71717A] text-center sm:text-right">
-                  Opens default email client with formatted message
-                </span>
-              </div>
+              <p className="text-sm text-accent-light sm:col-span-2" aria-live="polite">
+                {opened
+                  ? `Your email app should now be open. If nothing happened, write to ${personal.email} directly.`
+                  : ''}
+              </p>
             </form>
-          </div>
+          </FadeIn>
         </div>
       </div>
     </section>
   );
-};
+}

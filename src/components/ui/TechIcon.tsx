@@ -1,0 +1,65 @@
+import {
+  Atom,
+  Binary,
+  Boxes,
+  Braces,
+  Brain,
+  Coffee,
+  Container,
+  Cpu,
+  Cylinder,
+  Database,
+  FileCode,
+  FolderGit2,
+  GitBranch,
+  Hexagon,
+  LayoutTemplate,
+  Leaf,
+  MessageSquareText,
+  Network,
+  Palette,
+  Route,
+  Send,
+  Sparkles,
+  Table,
+  Terminal,
+  Workflow,
+  Zap,
+  type LucideIcon,
+} from 'lucide-react';
+import type { TechIconName } from '../../data/portfolio';
+
+const ICONS: Record<TechIconName, LucideIcon> = {
+  atom: Atom,
+  binary: Binary,
+  boxes: Boxes,
+  braces: Braces,
+  brain: Brain,
+  coffee: Coffee,
+  container: Container,
+  cpu: Cpu,
+  cylinder: Cylinder,
+  database: Database,
+  'file-code': FileCode,
+  'folder-git': FolderGit2,
+  'git-branch': GitBranch,
+  hexagon: Hexagon,
+  'layout-template': LayoutTemplate,
+  leaf: Leaf,
+  'message-square-text': MessageSquareText,
+  network: Network,
+  palette: Palette,
+  route: Route,
+  send: Send,
+  sparkles: Sparkles,
+  table: Table,
+  terminal: Terminal,
+  workflow: Workflow,
+  zap: Zap,
+};
+
+/** Generic glyph for a technology. Decorative: the name is always shown as text. */
+export function TechIcon({ name, size = 18, className = '' }: { name: TechIconName; size?: number; className?: string }) {
+  const Icon = ICONS[name];
+  return <Icon size={size} strokeWidth={1.5} className={className} aria-hidden="true" />;
+}

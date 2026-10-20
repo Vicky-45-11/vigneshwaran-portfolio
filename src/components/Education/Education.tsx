@@ -1,73 +1,58 @@
-import React from 'react';
-import { motion } from 'framer-motion';
-import { GraduationCap, Award, MapPin, Calendar } from 'lucide-react';
-import { PORTFOLIO_DATA } from '../../data/portfolio';
+import { GraduationCap, MapPin } from 'lucide-react';
+import { FadeIn } from '../animations/FadeIn';
+import { SectionHeading } from '../ui/SectionHeading';
+import { education } from '../../data/portfolio';
 
-export const Education: React.FC = () => {
+export function Education() {
   return (
-    <section id="education" className="py-24 relative overflow-hidden">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        {/* Section Header */}
-        <div className="mb-16 text-left">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 font-mono text-xs tracking-widest uppercase mb-3">
-            <span>05. EDUCATION</span>
-          </div>
+    <section id="education" aria-labelledby="education-title" className="relative border-t border-line py-24 sm:py-32">
+      <div className="container-editorial">
+        <SectionHeading index="06" label="Academic path" title="Education" id="education-title" />
 
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight text-[#F5F5F5] flex items-center gap-4">
-            <span>Academic Background</span>
-            <span className="hidden sm:block h-[1px] flex-1 max-w-[200px] bg-gradient-to-r from-blue-500/40 to-transparent" />
-          </h2>
-          <p className="mt-2 text-[#A1A1AA] text-sm sm:text-base font-mono">
-            Degrees, academic milestones, and engineering specializations.
-          </p>
-        </div>
-
-        {/* Education Cards Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          {PORTFOLIO_DATA.education.map((item, idx) => (
-            <motion.div
+        <div className="mt-14 grid gap-4 sm:mt-20 lg:grid-cols-12">
+          {education.map((item, i) => (
+            <FadeIn
+              as="article"
               key={item.institution}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: idx * 0.15 }}
-              className="relative p-6 sm:p-8 rounded-2xl bg-[#111111]/80 border border-white/[0.08] hover:border-blue-500/40 backdrop-blur-md transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-blue-500/5 group"
+              delay={i * 0.1}
+              className={`relative flex flex-col overflow-hidden p-6 sm:p-10 ${
+                item.primary ? 'mc-card border-accent lg:col-span-7' : 'mc-card lg:col-span-5'
+              }`}
             >
-              <div className="flex items-center justify-between mb-4">
-                <div className="p-2.5 rounded-xl bg-blue-500/10 border border-blue-500/20 text-blue-400">
-                  <GraduationCap size={22} />
-                </div>
-                <div className="flex items-center gap-1.5 text-xs font-mono text-[#71717A]">
-                  <Calendar size={13} />
-                  <span>{item.duration}</span>
-                </div>
+              {item.primary && (
+                <div
+                  className="pointer-events-none absolute -right-24 -top-24 h-72 w-72 rounded-full bg-[radial-gradient(circle,rgba(76,175,53,0.18),transparent_65%)]"
+                  aria-hidden="true"
+                />
+              )}
+              <div className="flex items-center justify-between gap-4">
+                <span className="label-mono text-accent-light">{item.period}</span>
+                <GraduationCap size={22} strokeWidth={1.5} className="text-mist-dim" aria-hidden="true" />
               </div>
-
-              <h3 className="text-xl font-bold text-[#F5F5F5] mb-2 group-hover:text-blue-400 transition-colors tracking-tight">
-                {item.institution}
+              <h3 className={`mt-10 font-pixel font-bold uppercase leading-[0.95] tracking-tight text-mist ${item.primary ? 'text-[clamp(1.75rem,3.4vw,3rem)]' : 'text-[clamp(1.5rem,2.6vw,2.25rem)]'}`}>
+                {item.qualification}
               </h3>
+              <p className="mt-4 text-lg text-mist-muted">{item.institution}</p>
 
-              <div className="text-sm font-mono text-cyan-400 mb-4 font-medium">
-                {item.degree}
-              </div>
-
-              <div className="pt-4 border-t border-white/[0.06] flex items-center justify-between">
-                <div className="flex items-center gap-1.5 text-xs font-mono text-[#A1A1AA]">
-                  <MapPin size={14} className="text-[#71717A]" />
-                  <span>{item.location}</span>
+              <div className="min-h-10 flex-1" aria-hidden="true" />
+              <dl className="flex flex-wrap gap-x-8 gap-y-4 border-t border-line pt-6">
+                <div>
+                  <dt className="label-mono text-mist-dim">Location</dt>
+                  <dd className="mt-1 flex items-center gap-1.5 text-sm text-mist">
+                    <MapPin size={14} aria-hidden="true" /> {item.location}
+                  </dd>
                 </div>
-
                 {item.cgpa && (
-                  <div className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-mono font-bold">
-                    <Award size={13} />
-                    <span>CGPA: {item.cgpa}</span>
+                  <div>
+                    <dt className="label-mono text-mist-dim">CGPA</dt>
+                    <dd className="mt-1 font-mono text-sm text-mist">{item.cgpa}</dd>
                   </div>
                 )}
-              </div>
-            </motion.div>
+              </dl>
+            </FadeIn>
           ))}
         </div>
       </div>
     </section>
   );
-};
+}
