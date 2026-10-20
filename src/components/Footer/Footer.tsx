@@ -50,7 +50,7 @@ export function Footer() {
         </div>
 
         <p
-          className="hero-heading pointer-events-none mt-16 select-none text-center text-[clamp(2.5rem,11.4vw,15rem)] font-black uppercase leading-[0.8] tracking-[-0.05em] opacity-60"
+          className="hero-heading pointer-events-none mt-16 select-none text-center text-[clamp(2.5rem,11.4vw,10.25rem)] font-black uppercase leading-[0.8] tracking-[-0.05em] opacity-60"
           aria-hidden="true"
         >
           {personal.firstName}

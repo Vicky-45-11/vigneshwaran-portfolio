@@ -48,7 +48,7 @@ export function Hero({ ready }: HeroProps) {
         <motion.h1
           id="hero-title"
           {...enter(0.2)}
-          className="hero-heading mt-6 text-[clamp(2.5rem,11.4vw,15rem)] font-black uppercase leading-[0.86] tracking-[-0.045em] sm:mt-8"
+          className="hero-heading mt-6 text-[clamp(2.5rem,11.4vw,10.25rem)] font-black uppercase leading-[0.86] tracking-[-0.045em] sm:mt-8"
         >
           <span className="block">Hi, I'm</span>
           <span className="block">{personal.firstName}</span>
