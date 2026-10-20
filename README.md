@@ -28,7 +28,7 @@ src/
     Cursor/        SplashCursor (React Bits WebGL fluid cursor) + PortfolioCursor wrapper
     ui/            ContactButton, LiveProjectButton, SectionHeading, TechIcon
     Intro/ Navbar/ Hero/ Marquee/ About/ Focus/ Skills/
-    Projects/ Experience/ Education/ Certifications/ Contact/ Footer/
+    Projects/ Experience/ (MagicTransform) Education/ Certifications/ Contact/ Footer/
   data/portfolio.ts
   hooks/           useReducedMotion, useMousePosition (useFinePointer), useScrollProgress, useMediaQuery
 ```
@@ -41,3 +41,4 @@ src/
 - If WebGL is unavailable, a CSS version of the orb is shown instead.
 - The fluid cursor (`SplashCursor`) is lazy-loaded after the intro, uses lower quality on touch devices, and draws nothing where WebGL2 is unavailable. Its canvas ignores pointer events, so links and buttons work as normal.
 - The hero name uses `VaporType`: the text stays real DOM text, and a canvas behind it draws the vapor. It pauses off screen and is plain text for reduced-motion visitors. It is written for this site, not the React Bits Pro component, and can be swapped for that once the licensed registry is available.
+- The Experience section uses `MagicTransform`: each responsibility starts as a plain document, flies into a glowing core and comes out as a coloured result card. The result cards are always in the markup, so screen readers and reduced-motion visitors get the full list. Like `VaporType`, it is written for this site rather than taken from React Bits Pro.

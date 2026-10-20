@@ -66,10 +66,16 @@ export interface Project {
   liveUrl?: string;
 }
 
+export interface Responsibility {
+  /** Two or three words, shown on the "document" before it is transformed. */
+  topic: string;
+  detail: string;
+}
+
 export interface Experience {
   organization: string;
   context: string;
-  responsibilities: string[];
+  responsibilities: Responsibility[];
 }
 
 export interface Education {
@@ -273,10 +279,10 @@ export const experience: Experience[] = [
     organization: 'Directorate of Student Affairs',
     context: 'Student organizational experience · SRM Institute of Science and Technology',
     responsibilities: [
-      'Supported planning and coordination of student programs and events.',
-      'Managed resources.',
-      'Collaborated with faculty and student teams.',
-      'Helped ensure smooth execution of activities.',
+      { topic: 'Programs & events', detail: 'Supported planning and coordination of student programs and events.' },
+      { topic: 'Resources', detail: 'Managed resources.' },
+      { topic: 'Teamwork', detail: 'Collaborated with faculty and student teams.' },
+      { topic: 'Execution', detail: 'Helped ensure smooth execution of activities.' },
     ],
   },
 ];
