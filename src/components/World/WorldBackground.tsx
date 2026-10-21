@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { blockCanvas, type BlockName } from './textures';
 import { drawBat, drawMob, type Bat, type Mob, type MobKind } from './mobs';
-import { sfx } from './sound';
+import { isSoundEnabled, setAmbience, sfx, type Material, type Zone } from './sound';
 import type { Weather } from './gameContext';
 import { generateWorld, rowShade, WORLD_ROWS, ZONES, type World } from './worldGen';
 import { useReducedMotion } from '../../hooks/useReducedMotion';
@@ -27,6 +27,23 @@ const ANCHORS: [string, number][] = [
   ['certifications', ZONES.nether - 1],
   ['contact', ZONES.end - 2],
 ];
+
+// What the camera is passing through, for footsteps and the sound mix.
+function materialAt(row: number): Material {
+  if (row < ZONES.surface + 3) return 'grass';
+  if (row < ZONES.surface + 6) return 'dirt';
+  if (row < ZONES.deepslate) return 'stone';
+  if (row < ZONES.nether) return 'deepslate';
+  if (row < ZONES.end) return 'netherrack';
+  return 'endstone';
+}
+
+function zoneAt(row: number): Zone {
+  if (row < ZONES.surface + 6) return 'surface';
+  if (row < ZONES.nether) return 'cave';
+  if (row < ZONES.end) return 'nether';
+  return 'end';
+}
 
 interface Cloud {
   x: number;
@@ -110,6 +127,8 @@ export function WorldBackground({ night, weather }: WorldBackgroundProps) {
     let raf = 0;
     let last = 0;
     let dirty = true;
+    let lastScroll = window.scrollY;
+    let stepDistance = 0;
 
     const layout = () => {
       const w = window.innerWidth;
@@ -188,6 +207,18 @@ export function WorldBackground({ night, weather }: WorldBackgroundProps) {
       const dt = Math.min(0.1, Math.max(0, t - lastTime));
       lastTime = t;
       const rowY = (row: number) => row * block - camPx;
+      const sound = isSoundEnabled();
+
+      // Sound: the mix follows the layer in view, and scrolling makes footsteps.
+      const midRow = cam + viewRows / 2;
+      setAmbience(zoneAt(midRow), weather, isNight);
+      const scrolled = Math.abs(window.scrollY - lastScroll);
+      lastScroll = window.scrollY;
+      stepDistance = scrolled > 900 ? 0 : stepDistance + scrolled;
+      if (stepDistance > 160) {
+        stepDistance = 0;
+        if (sound) sfx.step(materialAt(midRow));
+      }
 
       ctx.clearRect(0, 0, w, h);
       ctx.fillStyle = '#0b0b0d';
@@ -297,6 +328,7 @@ export function WorldBackground({ night, weather }: WorldBackgroundProps) {
         if (!surfaceVisible) continue;
         const col = Math.min(world.cols - 1, Math.max(0, Math.round(m.x)));
         drawMob(ctx, m, m.x * block, rowY(world.surface[col]), block, t);
+        if (sound && Math.random() < dt / 22) sfx.mob(m.kind, ((m.x * block) / w) * 2 - 1);
       }
 
       // Bats in the caves
@@ -307,6 +339,7 @@ export function WorldBackground({ night, weather }: WorldBackgroundProps) {
         ctx.globalAlpha = 0.85;
         drawBat(ctx, bx, by, block, t, bat.phase);
         ctx.globalAlpha = 1;
+        if (sound && Math.random() < dt / 16) sfx.mob('bat', (bx / w) * 2 - 1);
       }
 
       if (isNight && skyBottom > 0) {
