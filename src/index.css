@@ -612,3 +612,12 @@
     -webkit-mask-image: none;
   }
 }
+
+@keyframes tour-fill {
+  from {
+    width: 0%;
+  }
+  to {
+    width: 100%;
+  }
+}
