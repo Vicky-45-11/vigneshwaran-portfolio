@@ -276,7 +276,8 @@ function applyAmbience() {
   glide(rainGain.gain, zone === 'surface' ? wet : zone === 'cave' ? wet * 0.25 : 0);
   glide(rainFilter.frequency, zone === 'surface' ? 5000 : 700);
   glide(rumbleGain.gain, zone === 'nether' ? 0.22 : 0);
-  glide(windGain.gain, zone === 'end' ? 0.07 : 0);
+  // Wind howls in The End and across the surface while it snows.
+  glide(windGain.gain, zone === 'end' ? 0.07 : zone === 'surface' && weather === 'snow' ? 0.06 : 0);
   glide(echoSend.gain, zone === 'cave' ? 0.35 : zone === 'end' ? 0.45 : zone === 'nether' ? 0.2 : 0, 0.6);
   echoDelay.delayTime.setTargetAtTime(zone === 'end' ? 0.34 : zone === 'nether' ? 0.26 : 0.18, t, 0.2);
 }

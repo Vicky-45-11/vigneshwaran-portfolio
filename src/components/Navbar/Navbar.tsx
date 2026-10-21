@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { AnimatePresence, motion, useMotionValueEvent, useScroll } from 'framer-motion';
-import { CloudLightning, CloudRain, Menu, Moon, Sun, Volume2, VolumeX, X } from 'lucide-react';
-import { useGame } from '../World/gameContext';
+import { CloudLightning, CloudRain, CloudSun, Menu, Moon, Snowflake, Sun, Volume2, VolumeX, X } from 'lucide-react';
+import { useGame, type Weather } from '../World/gameContext';
 import { EASE_EDITORIAL } from '../animations/easing';
 import { navLinks, personal } from '../../data/portfolio';
 import { GithubIcon } from '../icons/GithubIcon';
@@ -13,7 +13,29 @@ interface NavbarProps {
   ready: boolean;
 }
 
-const WEATHER_NEXT = { clear: 'rain', rain: 'thunder', thunder: 'clear' } as const;
+// The weather button cycles clear → rain → thunder → snow, each with its own look.
+const WEATHER: Record<Weather, { next: Weather; label: string; Icon: typeof Sun; className: string }> = {
+  clear: { next: 'rain', label: 'Clear', Icon: CloudSun, className: '' },
+  rain: { next: 'thunder', label: 'Rain', Icon: CloudRain, className: 'mc-btn--rain' },
+  thunder: { next: 'snow', label: 'Thunderstorm', Icon: CloudLightning, className: 'mc-btn--thunder' },
+  snow: { next: 'clear', label: 'Snow', Icon: Snowflake, className: 'mc-btn--snow' },
+};
+
+function WeatherButton({ weather, onChange, className }: { weather: Weather; onChange: (w: Weather) => void; className: string }) {
+  const { next, label, Icon, className: tone } = WEATHER[weather];
+  return (
+    <button
+      type="button"
+      onClick={() => onChange(next)}
+      aria-pressed={weather !== 'clear'}
+      aria-label={`Weather: ${label}. Change to ${WEATHER[next].label.toLowerCase()}`}
+      title={`Weather: ${label} (click for ${WEATHER[next].label.toLowerCase()})`}
+      className={`${className} ${tone}`}
+    >
+      <Icon size={18} aria-hidden="true" />
+    </button>
+  );
+}
 
 /** Day/night, weather and sound switches for the block world. */
 function WorldControls({ compact = false }: { compact?: boolean }) {
@@ -33,15 +55,7 @@ function WorldControls({ compact = false }: { compact?: boolean }) {
       </button>
       {!compact && (
         <>
-          <button
-            type="button"
-            onClick={() => setWeather(WEATHER_NEXT[weather])}
-            aria-label={`Weather: ${weather}. Change weather`}
-            title={`Weather: ${weather}`}
-            className={`${size} ${weather !== 'clear' ? 'mc-btn--pressed' : ''}`}
-          >
-            {weather === 'thunder' ? <CloudLightning size={18} aria-hidden="true" /> : <CloudRain size={18} aria-hidden="true" />}
-          </button>
+          <WeatherButton weather={weather} onChange={setWeather} className={size} />
           <button
             type="button"
             onClick={() => setSound(!sound)}

@@ -270,6 +270,54 @@
       0 0 12px rgba(140, 160, 255, 0.55);
   }
 
+  /* Weather switch: each state has its own colour */
+  .mc-btn--rain {
+    border-color: #8fc2ff;
+    background-color: #24518a;
+    background-image: linear-gradient(#3a72b8, #24518a 60%, #173a66);
+    background-size: 100% 100%;
+    box-shadow:
+      inset 3px 3px 0 rgba(255, 255, 255, 0.22),
+      inset -3px -4px 0 rgba(0, 0, 0, 0.45),
+      0 0 10px rgba(110, 170, 255, 0.5);
+  }
+
+  .mc-btn--thunder {
+    border-color: #ffe14d;
+    color: #fff4a8;
+    background-color: #2a2140;
+    background-image: linear-gradient(#41335f, #2a2140 60%, #1a1429);
+    background-size: 100% 100%;
+    box-shadow:
+      inset 3px 3px 0 rgba(255, 255, 255, 0.18),
+      inset -3px -4px 0 rgba(0, 0, 0, 0.5),
+      0 0 12px rgba(255, 225, 77, 0.55);
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .mc-btn--thunder svg {
+      animation: mc-zap 2.6s steps(1) infinite;
+    }
+  }
+
+  @keyframes mc-zap {
+    0%, 86%, 100% { filter: none; }
+    88%, 94% { filter: drop-shadow(0 0 4px #fff59a) brightness(1.8); }
+  }
+
+  .mc-btn--snow {
+    border-color: #ffffff;
+    color: #1f4e79;
+    text-shadow: none;
+    background-color: #dfeefc;
+    background-image: linear-gradient(#ffffff, #dfeefc 60%, #b8d4ef);
+    background-size: 100% 100%;
+    box-shadow:
+      inset 3px 3px 0 rgba(255, 255, 255, 0.9),
+      inset -3px -4px 0 rgba(90, 130, 170, 0.45),
+      0 0 10px rgba(220, 240, 255, 0.6);
+  }
+
   .mc-btn--pressed {
     border-color: #ffffff;
     background-color: #3c8527;

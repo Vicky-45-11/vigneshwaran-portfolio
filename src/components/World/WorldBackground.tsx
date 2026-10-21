@@ -125,6 +125,9 @@ export function WorldBackground({ night, weather }: WorldBackgroundProps) {
     let lastTime = 0;
     let flash = 0;
     let nextFlash = 4;
+    let bolt: { col: number; zig: number[] } | null = null;
+    let lastWeather = weatherRef.current;
+    let snowCover = weatherRef.current === 'snow' ? 1 : 0;
     let raf = 0;
     let last = 0;
     let dirty = true;
@@ -211,9 +214,18 @@ export function WorldBackground({ night, weather }: WorldBackgroundProps) {
       const camPx = cam * block;
       const isNight = nightRef.current;
       const weather = weatherRef.current;
-      const wet = weather !== 'clear';
+      const wet = weather !== 'clear'; // overcast: sun and moon hidden
+      const rainy = weather === 'rain' || weather === 'thunder';
+      const snowy = weather === 'snow';
       const t = reducedMotion ? 0 : time / 1000;
       const dt = Math.min(0.1, Math.max(0, t - lastTime));
+      if (weather !== lastWeather) {
+        lastWeather = weather;
+        // Strike soon after a storm starts, so the switch visibly does something.
+        if (weather === 'thunder') nextFlash = 0.9;
+      }
+      // Snow settles on the ground gradually and melts the same way.
+      snowCover = reducedMotion ? (snowy ? 1 : 0) : Math.min(1, Math.max(0, snowCover + (snowy ? dt / 4 : -dt / 3)));
       lastTime = t;
       const rowY = (row: number) => row * block - camPx;
       const sound = isSoundEnabled();
@@ -239,7 +251,10 @@ export function WorldBackground({ night, weather }: WorldBackgroundProps) {
         const g = ctx.createLinearGradient(0, rowY(0), 0, skyBottom);
         if (isNight) {
           g.addColorStop(0, wet ? '#04060c' : '#060b1f');
-          g.addColorStop(1, wet ? '#141a2c' : '#1c2a55');
+          g.addColorStop(1, snowy ? '#1d2436' : wet ? '#141a2c' : '#1c2a55');
+        } else if (snowy) {
+          g.addColorStop(0, '#8fa3bf');
+          g.addColorStop(1, '#dde5ee');
         } else {
           g.addColorStop(0, wet ? '#5f6f86' : '#5e95f2');
           g.addColorStop(1, wet ? '#9ba8b8' : '#b9d6ff');
@@ -280,7 +295,11 @@ export function WorldBackground({ night, weather }: WorldBackgroundProps) {
         }
 
         // Clouds
-        ctx.fillStyle = wet
+        ctx.fillStyle = snowy
+          ? isNight
+            ? 'rgba(120, 128, 150, 0.8)'
+            : 'rgba(232, 236, 244, 0.95)'
+          : wet
           ? isNight
             ? 'rgba(60, 64, 78, 0.85)'
             : 'rgba(120, 126, 138, 0.92)'
@@ -412,7 +431,7 @@ export function WorldBackground({ night, weather }: WorldBackgroundProps) {
 
       // Rain falls only where there is open sky
       const rainBottom = Math.min(h, rowY(ZONES.surface + 1));
-      if (wet && rainBottom > 0) {
+      if (rainy && rainBottom > 0) {
         ctx.strokeStyle = isNight ? 'rgba(140, 160, 210, 0.45)' : 'rgba(70, 90, 150, 0.5)';
         ctx.lineWidth = 2;
         ctx.beginPath();
@@ -427,12 +446,35 @@ export function WorldBackground({ night, weather }: WorldBackgroundProps) {
         ctx.stroke();
       }
 
+      // Snow cover on the ground, then falling flakes
+      if (snowCover > 0 && rowY(ZONES.surface - 8) < h && rowY(ZONES.surface + 2) > 0) {
+        ctx.fillStyle = `rgba(248, 251, 255, ${(0.95 * snowCover).toFixed(3)})`;
+        for (let col = 0; col < world.cols; col++) {
+          const y = rowY(world.surface[col]);
+          ctx.fillRect(col * block, y, block, Math.ceil(block * 0.25 * snowCover));
+        }
+      }
+      if (snowy && rainBottom > 0) {
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.9)';
+        const flakes = Math.round(w / 9);
+        for (let i = 0; i < flakes; i++) {
+          const size = 3 + (i % 3) * 2;
+          const fall = 45 + (i % 7) * 12;
+          const y = ((((i * 53.7) % (h + 40)) + t * fall) % (h + 40)) - 20;
+          if (y > rainBottom) continue;
+          const x = ((((i * 97.3) % w) + Math.sin(t * 0.8 + i) * 18 + t * 10) % w + w) % w;
+          ctx.fillRect(Math.round(x), Math.round(y), size, size);
+        }
+      }
+
       // Lightning during thunderstorms
       if (weather === 'thunder' && !reducedMotion) {
         nextFlash -= dt;
         if (nextFlash <= 0) {
           flash = 1;
           nextFlash = 6 + Math.random() * 8;
+          // A jagged bolt from the clouds to the ground, in world columns.
+          bolt = { col: 2 + Math.random() * Math.max(1, world.cols - 4), zig: Array.from({ length: 12 }, () => Math.random() - 0.5) };
           window.setTimeout(() => sfx.thunder(), 250);
         }
       }
@@ -440,6 +482,27 @@ export function WorldBackground({ night, weather }: WorldBackgroundProps) {
         ctx.fillStyle = `rgba(235, 240, 255, ${(flash * (skyBottom > 0 ? 0.7 : 0.25)).toFixed(3)})`;
         ctx.fillRect(0, 0, w, h);
         flash = Math.max(0, flash - dt * 3.5);
+      }
+      if (bolt && flash > 0.2) {
+        const col = Math.min(world.cols - 1, Math.max(0, Math.round(bolt.col)));
+        const top = rowY(3);
+        const ground = rowY(world.surface[col]);
+        if (ground > 0 && top < h) {
+          ctx.save();
+          ctx.strokeStyle = '#ffffff';
+          ctx.shadowColor = 'rgba(190, 210, 255, 0.95)';
+          ctx.shadowBlur = block * 0.8;
+          ctx.lineWidth = Math.max(3, block * 0.18);
+          ctx.beginPath();
+          let x = bolt.col * block;
+          ctx.moveTo(x, top);
+          bolt.zig.forEach((z, i) => {
+            x += z * block * 1.4;
+            ctx.lineTo(x, top + ((i + 1) / bolt!.zig.length) * (ground - top));
+          });
+          ctx.stroke();
+          ctx.restore();
+        }
       }
     };
 
