@@ -35,6 +35,11 @@ export function GameSettingsProvider({ children }: { children: ReactNode }) {
     }
   }, [night]);
 
+  // CSS dresses the interface for the weather (snow settles on the cards).
+  useEffect(() => {
+    document.documentElement.dataset.weather = weather;
+  }, [weather]);
+
   // M toggles sound anywhere, unless the visitor is typing.
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {

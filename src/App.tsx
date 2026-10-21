@@ -18,6 +18,7 @@ import { useScrollProgress } from './hooks/useScrollProgress';
 import { BlockBreak } from './components/World/BlockBreak';
 import { Hud } from './components/World/Hud';
 import { WorldBackground } from './components/World/WorldBackground';
+import { SnowOverlay } from './components/World/SnowOverlay';
 import { ChatConsole } from './components/World/ChatConsole';
 import { GameSettingsProvider } from './components/World/GameSettings';
 import { useGame } from './components/World/gameContext';
@@ -69,6 +70,7 @@ function Portfolio() {
 
       <WorldBackground night={night} weather={weather} />
       {!introOpen && <BlockBreak />}
+      <SnowOverlay active={weather === 'snow' && !introOpen} />
       <Hud activeSection={activeSection} progress={progress} visible={!introOpen} />
       <ChatConsole visible={!introOpen} />
 

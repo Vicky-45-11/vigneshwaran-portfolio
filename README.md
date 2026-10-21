@@ -12,7 +12,7 @@ Game features:
 - **"Advancement Made!" toasts** the first time you reach each section.
 - **Block breaking**: clicking anywhere throws pixel particles in the colours of the layer you are in.
 - **Night mode (dark theme)**: the sun/moon button in the navbar (or `/theme dark`) switches the whole site to night. The world goes dark with glowing torches and zombies on the surface, and the interface switches to deepslate and blackstone. The choice is remembered for the next visit.
-- **Weather button** in the navbar cycles clear → rain → thunderstorm → snow, and the button changes colour for each one. Thunderstorms strike lightning bolts down to the ground. Snow falls and settles on the grass, with wind when sound is on. Chat announces each change, and `/weather snow` works too.
+- **Weather button** in the navbar cycles clear → rain → thunderstorm → snow, and the button changes colour for each one. Thunderstorms strike lightning bolts down to the ground. Snow falls across the whole page (even underground), settles on the grass and on top of every card and window, with wind when sound is on. Chat announces each change, and `/weather snow` works too.
 - **Mobs**: pigs, sheep and chickens wander the surface; bats flutter in the caves.
 - **Chat console**: press `T` (or `/`, or the chat button) and type `/help`. Commands include `/tp skills`, `/time set night`, `/weather rain`, `/sound on`, `/whoami`, `/projects`, `/email` and `/github`.
 - **Crafting table** under the skills: pick a project and its technologies are placed in a 3×3 grid to craft it (ingredients come from each project's `technologies` list).
