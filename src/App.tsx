@@ -9,6 +9,8 @@ import { TechnicalFocus } from './components/Focus/TechnicalFocus';
 import { Skills } from './components/Skills/Skills';
 import { SkillTree } from './components/Extras/SkillTree';
 import { ResumeChest } from './components/Extras/ResumeChest';
+import { MiniTerminal } from './components/Extras/MiniTerminal';
+import { PrintSummary } from './components/Extras/PrintSummary';
 import { Projects } from './components/Projects/Projects';
 import { Experience } from './components/Experience/Experience';
 import { Education } from './components/Education/Education';
@@ -94,6 +96,8 @@ function Portfolio() {
           <Education />
           <Certifications />
           <ResumeChest />
+          <PrintSummary />
+          <MiniTerminal />
           <Contact />
         </main>
         <Footer />

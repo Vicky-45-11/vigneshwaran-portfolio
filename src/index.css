@@ -612,3 +612,50 @@
     -webkit-mask-image: none;
   }
 }
+
+.print-sheet {
+  display: none;
+}
+
+@media print {
+  body > *:not(#print-sheet) {
+    display: none !important;
+  }
+
+  .print-sheet {
+    display: block;
+    padding: 0;
+    color: #000;
+    background: #fff;
+    font: 11pt/1.4 Georgia, 'Times New Roman', serif;
+  }
+
+  .print-sheet h1 {
+    font-size: 22pt;
+    margin: 0;
+  }
+
+  .print-sheet h2 {
+    font-size: 12pt;
+    margin: 12pt 0 3pt;
+    padding-bottom: 2pt;
+    border-bottom: 1px solid #000;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .print-sheet .sub {
+    margin: 2pt 0 0;
+    color: #333;
+    font-size: 10pt;
+  }
+
+  .print-sheet ul {
+    margin: 0;
+    padding-left: 14pt;
+  }
+
+  .print-sheet li {
+    margin-bottom: 2pt;
+  }
+}
