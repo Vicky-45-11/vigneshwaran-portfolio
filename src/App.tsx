@@ -9,6 +9,8 @@ import { TechnicalFocus } from './components/Focus/TechnicalFocus';
 import { Skills } from './components/Skills/Skills';
 import { SkillTree } from './components/Extras/SkillTree';
 import { ResumeChest } from './components/Extras/ResumeChest';
+import { VillagerGuide } from './components/Extras/VillagerGuide';
+import { BlockPlayground } from './components/Extras/BlockPlayground';
 import { Projects } from './components/Projects/Projects';
 import { Experience } from './components/Experience/Experience';
 import { Education } from './components/Education/Education';
@@ -94,6 +96,8 @@ function Portfolio() {
           <Education />
           <Certifications />
           <ResumeChest />
+          <VillagerGuide />
+          <BlockPlayground />
           <Contact />
         </main>
         <Footer />
