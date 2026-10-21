@@ -1,14 +1,13 @@
 import { useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
-import { Check, Copy, GraduationCap, Mail, MapPin } from 'lucide-react';
+import { Check, Copy, Download, GraduationCap, Mail, MapPin } from 'lucide-react';
 import { SectionHeading } from '../ui/SectionHeading';
 import { certifications, education, personal } from '../../data/portfolio';
 import { useReducedMotion } from '../../hooks/useReducedMotion';
 
 // A chest that opens to the quick facts a recruiter looks for. Everything comes
-// from the portfolio data. The download slot appears once a resume file exists:
-// put it at public/resume.pdf and set RESUME_URL to '/resume.pdf'.
-const RESUME_URL: string | null = null;
+// from the portfolio data, and the resume PDF is served from public/.
+const RESUME_URL = '/Vigneshwaran_S_Resume.pdf';
 
 export function ResumeChest() {
   const reduce = useReducedMotion();
@@ -94,16 +93,19 @@ export function ResumeChest() {
                       {copied ? 'Email copied' : personal.email}
                       {!copied && <Copy size={14} aria-hidden="true" />}
                     </button>
-                    {RESUME_URL && (
-                      <a href={RESUME_URL} download className="mc-btn inline-flex min-h-11 items-center px-4 text-sm">
-                        Download resume (PDF)
-                      </a>
-                    )}
                   </li>
                 </motion.ul>
               )}
             </AnimatePresence>
             {!open && <p className="label-mono text-mist-muted">Click the chest to see the loot.</p>}
+            <a
+              href={RESUME_URL}
+              download
+              className="mc-btn mt-5 inline-flex min-h-11 items-center gap-2 px-4 text-sm"
+            >
+              <Download size={16} aria-hidden="true" />
+              Download resume (PDF)
+            </a>
           </div>
         </div>
       </div>
