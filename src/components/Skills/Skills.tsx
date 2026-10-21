@@ -54,8 +54,8 @@ export function Skills() {
 
         <div className="mc-inventory mt-8 p-3 sm:p-5">
           <div className="flex flex-wrap items-baseline justify-between gap-2 px-1">
-            <p className="font-pixel text-lg text-[#3f3f3f]">Inventory</p>
-            <p className="label-mono text-[#4a4a4a] [text-shadow:none]">
+            <p className="font-pixel text-lg text-[color:var(--inv-text)]">Inventory</p>
+            <p className="label-mono text-[color:var(--inv-muted)] [text-shadow:none]">
               Total items: {skills.length} · Categories: {skillCategories.length}
             </p>
           </div>
@@ -78,7 +78,7 @@ export function Skills() {
                       <TechIcon name={skill.icon} size={22} />
                     </span>
                   </span>
-                  <span className="line-clamp-2 font-mono text-[1.05rem] leading-[0.95] text-[#1e1e1e]" aria-hidden="true">
+                  <span className="line-clamp-2 font-mono text-[1.05rem] leading-[0.95] text-[color:var(--inv-strong)]" aria-hidden="true">
                     {skill.name}
                   </span>
                   <span

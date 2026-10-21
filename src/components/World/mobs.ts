@@ -1,9 +1,10 @@
 /**
  * Original pixel animals drawn with rectangles: a pig, a sheep and a chicken
- * that wander the surface, and bats that flutter in the caves.
+ * that wander the surface, zombies that come out at night, and bats that
+ * flutter in the caves.
  */
 
-export type MobKind = 'pig' | 'sheep' | 'chicken';
+export type MobKind = 'pig' | 'sheep' | 'chicken' | 'zombie';
 
 export interface Mob {
   kind: MobKind;
@@ -58,6 +59,17 @@ export function drawMob(ctx: Ctx, mob: Mob, x: number, yBottom: number, b: numbe
     rect(0.38, 0.38, 0.36, 0.4, '#c9b9a6');
     rect(0.38, 0.7, 0.36, 0.1, '#ececec');
     rect(0.56, 0.6, 0.07, 0.07, '#111111');
+  } else if (mob.kind === 'zombie') {
+    // Upright, arms out front, faintly glowing eyes.
+    legs([-0.14, 0.02], 0.62, 0.14, '#3b3f8f');
+    rect(-0.18, 0.62, 0.36, 0.62, '#2f9aa0');
+    rect(-0.18, 0.62, 0.36, 0.1, '#257c81');
+    rect(0.0, 1.0, 0.56, 0.14, '#3f8a3a');
+    rect(0.46, 1.0, 0.1, 0.14, '#356f30');
+    rect(-0.2, 1.24, 0.42, 0.42, '#4f9a45');
+    rect(-0.2, 1.24, 0.42, 0.06, '#3d7a35');
+    rect(0.1, 1.42, 0.08, 0.08, '#c7ffb0');
+    rect(0.0, 1.32, 0.18, 0.04, '#2d5e28');
   } else {
     legs([-0.06, 0.08], 0.16, 0.05, '#e8a33a');
     rect(-0.24, 0.14, 0.42, 0.3, '#f4f4f4');

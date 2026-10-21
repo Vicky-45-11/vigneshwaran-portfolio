@@ -11,7 +11,7 @@ Game features:
 - **XP bar** that fills as you scroll, and a **level** that counts the sections you have visited.
 - **"Advancement Made!" toasts** the first time you reach each section.
 - **Block breaking**: clicking anywhere throws pixel particles in the colours of the layer you are in.
-- **Day/night** toggle (sun/moon button in the navbar).
+- **Night mode (dark theme)**: the sun/moon button in the navbar (or `/theme dark`) switches the whole site to night. The world goes dark with glowing torches and zombies on the surface, and the interface switches to deepslate and blackstone. The choice is remembered for the next visit.
 - **Weather**: clear, rain or thunder (cloud button in the navbar), with lightning flashes.
 - **Mobs**: pigs, sheep and chickens wander the surface; bats flutter in the caves.
 - **Chat console**: press `T` (or `/`, or the chat button) and type `/help`. Commands include `/tp skills`, `/time set night`, `/weather rain`, `/sound on`, `/whoami`, `/projects`, `/email` and `/github`.

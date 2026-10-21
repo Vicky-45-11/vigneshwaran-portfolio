@@ -62,8 +62,8 @@ export function CraftingTable() {
   return (
     <div className="mc-inventory mt-10 p-3 sm:p-5">
       <div className="flex flex-wrap items-baseline justify-between gap-2 px-1">
-        <p className="font-pixel text-lg text-[#3f3f3f]">Crafting Table</p>
-        <p className="label-mono text-[#4a4a4a] [text-shadow:none]">Skills in, projects out</p>
+        <p className="font-pixel text-lg text-[color:var(--inv-text)]">Crafting Table</p>
+        <p className="label-mono text-[color:var(--inv-muted)] [text-shadow:none]">Skills in, projects out</p>
       </div>
 
       <div className="mt-4 grid gap-6 lg:grid-cols-[minmax(0,15rem)_1fr] lg:items-center">
@@ -75,10 +75,10 @@ export function CraftingTable() {
                 data-sound="wood"
                 onClick={() => choose(i)}
                 aria-pressed={i === selected}
-                className={`mc-slot-light flex w-full items-center gap-3 px-3 py-2 text-left ${i === selected ? '!bg-[#b4b4b4] outline outline-[3px] outline-white' : ''}`}
+                className={`mc-slot-light flex w-full items-center gap-3 px-3 py-2 text-left ${i === selected ? '!bg-[var(--inv-selected)] outline outline-[3px] outline-white' : ''}`}
               >
                 <span className="mc-item h-7 w-7 shrink-0" style={{ backgroundImage: 'var(--tex-chest)' }} aria-hidden="true" />
-                <span className="min-w-0 font-pixel text-sm leading-tight text-[#1e1e1e]">{p.title}</span>
+                <span className="min-w-0 font-pixel text-sm leading-tight text-[color:var(--inv-strong)]">{p.title}</span>
               </button>
             </li>
           ))}
@@ -103,13 +103,13 @@ export function CraftingTable() {
                       <span className="sr-only">{ing.name}</span>
                     </motion.span>
                   )}
-                  {total === 0 && i === 4 && <span className="font-pixel text-2xl text-[#3f3f3f]">?</span>}
+                  {total === 0 && i === 4 && <span className="font-pixel text-2xl text-[color:var(--inv-text)]">?</span>}
                 </div>
               );
             })}
           </div>
 
-          <ArrowRight size={40} strokeWidth={3} className="rotate-90 text-[#5a5a5a] sm:rotate-0" aria-hidden="true" />
+          <ArrowRight size={40} strokeWidth={3} className="rotate-90 text-[color:var(--inv-muted)] sm:rotate-0" aria-hidden="true" />
 
           <div className="flex flex-col items-center gap-2">
             <a
@@ -132,12 +132,12 @@ export function CraftingTable() {
                 </motion.span>
               )}
             </a>
-            <p className="max-w-[12rem] text-center font-pixel text-sm leading-tight text-[#1e1e1e]">{project.title}</p>
+            <p className="max-w-[12rem] text-center font-pixel text-sm leading-tight text-[color:var(--inv-strong)]">{project.title}</p>
           </div>
         </div>
       </div>
 
-      <p className="mt-4 px-1 font-mono text-lg leading-tight text-[#3f3f3f]">
+      <p className="mt-4 px-1 font-mono text-lg leading-tight text-[color:var(--inv-text)]">
         {total > 0 ? `Ingredients: ${project.technologies.join(' + ')}` : 'Recipe not published yet: technologies for this project have not been listed.'}
       </p>
     </div>
