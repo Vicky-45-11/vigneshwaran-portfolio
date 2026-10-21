@@ -7,6 +7,8 @@ import { TechMarquee } from './components/Marquee/TechMarquee';
 import { About } from './components/About/About';
 import { TechnicalFocus } from './components/Focus/TechnicalFocus';
 import { Skills } from './components/Skills/Skills';
+import { SkillTree } from './components/Extras/SkillTree';
+import { ResumeChest } from './components/Extras/ResumeChest';
 import { Projects } from './components/Projects/Projects';
 import { Experience } from './components/Experience/Experience';
 import { Education } from './components/Education/Education';
@@ -86,10 +88,12 @@ function Portfolio() {
           <About />
           <TechnicalFocus />
           <Skills />
+          <SkillTree />
           <Projects />
           <Experience />
           <Education />
           <Certifications />
+          <ResumeChest />
           <Contact />
         </main>
         <Footer />
