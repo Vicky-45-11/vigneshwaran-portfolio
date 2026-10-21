@@ -37,7 +37,7 @@ const TP_TARGETS: Record<string, string> = {
 
 const HELP = [
   '/tp <about|skills|projects|experience|education|certifications|contact|spawn>',
-  '/time set <day|night>   /weather <clear|rain|thunder>   /sound <on|off>',
+  '/theme <dark|light>   /time set <day|night>   /weather <clear|rain|thunder>   /sound <on|off>',
   '/playsound <name>   /music <on|off>   (press M to toggle sound)',
   '/whoami   /projects   /skills   /email   /github   /seed   /clear',
 ];
@@ -140,6 +140,17 @@ export function ChatConsole({ visible }: { visible: boolean }) {
           setNight(true);
           ok('Set the time to night');
         } else say('Usage: /time set <day|night>', RED);
+        break;
+      }
+      case 'theme': {
+        const value = args[0];
+        if (value === 'dark' || value === 'night' || value === 'black') {
+          setNight(true);
+          ok('Night mode on: dark theme');
+        } else if (value === 'light' || value === 'day') {
+          setNight(false);
+          ok('Day mode on');
+        } else say('Usage: /theme <dark|light>', RED);
         break;
       }
       case 'weather': {

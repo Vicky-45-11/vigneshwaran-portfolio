@@ -25,11 +25,11 @@ function WorldControls({ compact = false }: { compact?: boolean }) {
         type="button"
         onClick={() => setNight(!night)}
         aria-pressed={night}
-        aria-label={night ? 'Switch the world to day' : 'Switch the world to night'}
-        title={night ? 'Day' : 'Night'}
-        className={size}
+        aria-label={night ? 'Night mode on. Switch to day mode' : 'Switch to night mode (dark theme)'}
+        title={night ? 'Night mode on: switch to day' : 'Night mode (dark theme)'}
+        className={`${size} ${night ? 'mc-btn--night' : ''}`}
       >
-        {night ? <Sun size={18} aria-hidden="true" /> : <Moon size={18} aria-hidden="true" />}
+        {night ? <Moon size={18} aria-hidden="true" /> : <Sun size={18} aria-hidden="true" />}
       </button>
       {!compact && (
         <>
@@ -148,7 +148,7 @@ export function Navbar({ activeSection, ready }: NavbarProps) {
         {menuOpen && (
           <motion.div
             id="mobile-menu"
-            className="mc-dirt-bg fixed inset-0 z-40 flex flex-col px-6 pb-10 pt-24 md:hidden"
+            className="mc-dirt-bg fixed inset-0 z-[48] flex flex-col px-6 pb-10 pt-24 md:hidden"
             initial={{ opacity: 0, clipPath: 'inset(0 0 100% 0)' }}
             animate={{ opacity: 1, clipPath: 'inset(0 0 0% 0)' }}
             exit={{ opacity: 0, clipPath: 'inset(0 0 100% 0)' }}

@@ -10,7 +10,7 @@
 
 export type Material = 'grass' | 'dirt' | 'stone' | 'deepslate' | 'wood' | 'netherrack' | 'endstone';
 export type Zone = 'surface' | 'cave' | 'nether' | 'end';
-export type MobSound = 'pig' | 'sheep' | 'chicken' | 'bat';
+export type MobSound = 'pig' | 'sheep' | 'chicken' | 'zombie' | 'bat';
 
 let enabled = false;
 let musicOn = true;
@@ -375,6 +375,9 @@ export const sfx = {
       [0, 0.1, 0.22].forEach((delay) =>
         tone({ freq: vary(1150), to: 1550, dur: 0.05, type: 'square', vol: 0.025, filter: ['bandpass', 1800], delay, pan }),
       );
+    } else if (kind === 'zombie') {
+      tone({ freq: vary(110), to: 80, dur: 0.9, type: 'sawtooth', vol: 0.05, attack: 0.15, vibrato: [7, 9], filter: ['lowpass', 600], pan });
+      noise({ dur: 0.8, vol: 0.06, type: 'bandpass', freq: 400, q: 3, attack: 0.2, pan });
     } else {
       tone({ freq: vary(3800), to: 4600, dur: 0.05, vol: 0.03, pan });
       tone({ freq: vary(4000), to: 4800, dur: 0.05, vol: 0.025, delay: 0.09, pan });
@@ -403,6 +406,7 @@ export const PLAYABLE: Record<string, () => void> = {
   sheep: () => sfx.mob('sheep'),
   chicken: () => sfx.mob('chicken'),
   bat: () => sfx.mob('bat'),
+  zombie: () => sfx.mob('zombie'),
   xp: sfx.xp,
   levelup: sfx.levelUp,
   chest: sfx.chest,

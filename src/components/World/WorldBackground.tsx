@@ -120,6 +120,7 @@ export function WorldBackground({ night, weather }: WorldBackgroundProps) {
     let clouds: Cloud[] = [];
     let stars: { x: number; y: number; s: number; p: number }[] = [];
     let mobs: Mob[] = [];
+    let zombies: Mob[] = [];
     let bats: Bat[] = [];
     let lastTime = 0;
     let flash = 0;
@@ -156,6 +157,14 @@ export function WorldBackground({ night, weather }: WorldBackgroundProps) {
           speed: 0.5 + (i % 3) * 0.2,
           walking: i % 2 === 0,
           nextChange: 1 + (i % 4),
+        }));
+        zombies = Array.from({ length: Math.max(1, Math.round(cols / 16)) }, (_, i) => ({
+          kind: 'zombie' as const,
+          x: 4 + ((i * 11.7) % Math.max(1, cols - 8)),
+          dir: i % 2 ? -1 : 1,
+          speed: 0.35,
+          walking: true,
+          nextChange: 2 + i,
         }));
         bats = world.caveSpots
           .filter((_, i) => i % 9 === 0)
@@ -311,7 +320,9 @@ export function WorldBackground({ night, weather }: WorldBackgroundProps) {
 
       // Animals on the surface
       const surfaceVisible = rowY(ZONES.surface - 6) < h && rowY(ZONES.surface + 2) > 0;
-      for (const m of mobs) {
+      // Zombies only come out at night.
+      const surfaceMobs = isNight ? [...mobs, ...zombies] : mobs;
+      for (const m of surfaceMobs) {
         if (!reducedMotion) {
           m.nextChange -= dt;
           if (m.nextChange <= 0) {
@@ -342,9 +353,14 @@ export function WorldBackground({ night, weather }: WorldBackgroundProps) {
         if (sound && Math.random() < dt / 16) sfx.mob('bat', (bx / w) * 2 - 1);
       }
 
-      if (isNight && skyBottom > 0) {
-        ctx.fillStyle = 'rgba(8, 12, 40, 0.45)';
-        ctx.fillRect(0, 0, w, Math.min(h, rowY(ZONES.surface + 10)));
+      if (isNight) {
+        // Night darkens the whole world, so light sources glow brighter.
+        ctx.fillStyle = 'rgba(4, 6, 20, 0.32)';
+        ctx.fillRect(0, 0, w, h);
+        if (skyBottom > 0) {
+          ctx.fillStyle = 'rgba(8, 12, 40, 0.3)';
+          ctx.fillRect(0, 0, w, Math.min(h, rowY(ZONES.surface + 10)));
+        }
       }
 
       // Light sources glow through the darkness
