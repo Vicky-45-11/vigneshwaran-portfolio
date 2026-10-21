@@ -79,6 +79,11 @@ export function Hud({ activeSection, progress, visible }: HudProps) {
     if (slot?.advancement) setToasts([...toasts.slice(-2), slot]);
   }
 
+  // An experience orb ding each time a new section comes into view.
+  useEffect(() => {
+    if (visible) sfx.xp();
+  }, [activeSection, visible]);
+
   // Number keys jump to sections, like switching hotbar slots.
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -87,6 +92,7 @@ export function Hud({ activeSection, progress, visible }: HudProps) {
       if (target && (target.isContentEditable || ['INPUT', 'TEXTAREA', 'SELECT'].includes(target.tagName))) return;
       const n = Number(e.key);
       if (!Number.isInteger(n) || n < 1 || n > SLOTS.length) return;
+      sfx.noteBlock(n - 1);
       document.getElementById(SLOTS[n - 1].id)?.scrollIntoView({ behavior: reducedMotion ? 'auto' : 'smooth' });
     };
     window.addEventListener('keydown', onKey);
@@ -125,6 +131,8 @@ export function Hud({ activeSection, progress, visible }: HudProps) {
               <li key={slot.id} className="group relative">
                 <a
                   href={`#${slot.id}`}
+                  data-sound="note"
+                  onClick={() => sfx.noteBlock(i)}
                   aria-label={`${i + 1}: ${slot.label}`}
                   aria-current={active ? 'true' : undefined}
                   className={`mc-slot relative flex h-[var(--slot)] w-[var(--slot)] items-center justify-center ${active ? 'mc-slot--active' : ''}`}

@@ -51,7 +51,7 @@ export function CraftingTable() {
   const choose = (i: number) => {
     setSelected(i);
     setFilled(reducedMotion ? 9 : 0);
-    sfx.click();
+    sfx.dig('wood');
   };
 
   const grid: (Ingredient | null)[] = Array(9).fill(null);
@@ -72,6 +72,7 @@ export function CraftingTable() {
             <li key={p.id}>
               <button
                 type="button"
+                data-sound="wood"
                 onClick={() => choose(i)}
                 aria-pressed={i === selected}
                 className={`mc-slot-light flex w-full items-center gap-3 px-3 py-2 text-left ${i === selected ? '!bg-[#b4b4b4] outline outline-[3px] outline-white' : ''}`}
@@ -113,6 +114,8 @@ export function CraftingTable() {
           <div className="flex flex-col items-center gap-2">
             <a
               href={`#projects`}
+              data-sound="chest"
+              onClick={() => sfx.chest()}
               className="mc-slot-light relative flex h-20 w-20 items-center justify-center sm:h-24 sm:w-24"
               aria-label={`Result: ${project.title}. Go to projects`}
             >

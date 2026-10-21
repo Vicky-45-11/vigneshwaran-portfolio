@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState, type FormEvent } from 'react';
 import { MessageSquare } from 'lucide-react';
 import { useGame, type Weather } from './gameContext';
-import { sfx } from './sound';
+import { PLAYABLE, setMusic, sfx } from './sound';
 import { personal, projects, skillCategories, skills } from '../../data/portfolio';
 import { useReducedMotion } from '../../hooks/useReducedMotion';
 
@@ -38,6 +38,7 @@ const TP_TARGETS: Record<string, string> = {
 const HELP = [
   '/tp <about|skills|projects|experience|education|certifications|contact|spawn>',
   '/time set <day|night>   /weather <clear|rain|thunder>   /sound <on|off>',
+  '/playsound <name>   /music <on|off>   (press M to toggle sound)',
   '/whoami   /projects   /skills   /email   /github   /seed   /clear',
 ];
 
@@ -66,7 +67,7 @@ export function ChatConsole({ visible }: { visible: boolean }) {
     setWelcomed(true);
     setLines([
       { id: nextId++, text: `Welcome to ${personal.firstName}'s world!`, color: YELLOW, at: now },
-      { id: nextId++, text: 'Press T and type /help for commands.', color: GRAY, at: now },
+      { id: nextId++, text: 'Press T for commands, M for sound.', color: GRAY, at: now },
     ]);
   }
 
@@ -86,6 +87,7 @@ export function ChatConsole({ visible }: { visible: boolean }) {
         e.preventDefault();
         setInput(e.key === '/' ? '/' : '');
         setOpen(true);
+        sfx.chatOpen();
       }
     };
     window.addEventListener('keydown', onKey);
@@ -124,7 +126,8 @@ export function ChatConsole({ visible }: { visible: boolean }) {
           break;
         }
         document.getElementById(id)?.scrollIntoView({ behavior: reducedMotion ? 'auto' : 'smooth' });
-        ok(`Teleported to ${args[0]}`);
+        say(`Teleported to ${args[0]}`);
+        sfx.teleport();
         setOpen(false);
         break;
       }
@@ -152,6 +155,23 @@ export function ChatConsole({ visible }: { visible: boolean }) {
           setSound(args[0] === 'on');
           say(`Sound effects ${args[0]}`);
         } else say('Usage: /sound <on|off>', RED);
+        break;
+      case 'playsound': {
+        const play = PLAYABLE[args[0] ?? ''];
+        if (play) {
+          setSound(true);
+          // Give the audio engine a moment to wake up the first time.
+          window.setTimeout(play, 60);
+          say(`Played sound ${args[0]}`);
+        } else say(`Usage: /playsound <${Object.keys(PLAYABLE).join('|')}>`, RED);
+        break;
+      }
+      case 'music':
+        if (args[0] === 'on' || args[0] === 'off') {
+          setMusic(args[0] === 'on');
+          if (args[0] === 'on') setSound(true);
+          say(`Background music ${args[0]}`);
+        } else say('Usage: /music <on|off>', RED);
         break;
       case 'whoami':
         ok(`${personal.name} · ${personal.headline} · ${personal.location}`);
@@ -232,7 +252,11 @@ export function ChatConsole({ visible }: { visible: boolean }) {
       ) : (
         <button
           type="button"
-          onClick={() => setOpen(true)}
+          data-sound="chat"
+          onClick={() => {
+            setOpen(true);
+            sfx.chatOpen();
+          }}
           className="mc-btn flex h-10 w-10 items-center justify-center self-start"
           aria-label="Open chat commands (T)"
           title="Chat (T)"

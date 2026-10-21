@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { blockColors, type BlockName } from './textures';
-import { sfx } from './sound';
+import { sfx, type Material } from './sound';
 import { useReducedMotion } from '../../hooks/useReducedMotion';
 
 /**
@@ -20,6 +20,15 @@ interface Particle {
 }
 
 const LIFE_MS = 750;
+
+const MATERIAL: Partial<Record<BlockName, Material>> = {
+  grassSide: 'grass',
+  dirt: 'dirt',
+  stone: 'stone',
+  deepslate: 'deepslate',
+  netherrack: 'netherrack',
+  endStone: 'endstone',
+};
 
 function layerBlock(): BlockName {
   const max = document.documentElement.scrollHeight - window.innerHeight;
@@ -69,9 +78,11 @@ export function BlockBreak() {
       if (e.button !== 0) return;
       const target = e.target as HTMLElement | null;
       if (target?.closest('input, textarea, select')) return;
-      if (target?.closest('a, button, [role="button"]')) sfx.click();
-      else sfx.breakBlock();
       const block = layerBlock();
+      if (target?.closest('[data-sound]')) {
+        // The element plays its own sound.
+      } else if (target?.closest('a, button, [role="button"]')) sfx.click();
+      else sfx.dig(MATERIAL[block] ?? 'stone', (e.clientX / window.innerWidth) * 2 - 1);
       let colors = palettes.get(block);
       if (!colors) {
         colors = blockColors(block, 8);

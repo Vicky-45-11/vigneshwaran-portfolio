@@ -16,7 +16,13 @@ Game features:
 - **Mobs**: pigs, sheep and chickens wander the surface; bats flutter in the caves.
 - **Chat console**: press `T` (or `/`, or the chat button) and type `/help`. Commands include `/tp skills`, `/time set night`, `/weather rain`, `/sound on`, `/whoami`, `/projects`, `/email` and `/github`.
 - **Crafting table** under the skills: pick a project and its technologies are placed in a 3×3 grid to craft it (ingredients come from each project's `technologies` list).
-- **Sound effects** made with the Web Audio API (clicks, block breaks, level-ups, thunder). Off by default; turn them on with the speaker button or `/sound on`.
+- **Sound** made with the Web Audio API, no audio files. Off by default; turn it on from the title screen, the speaker button, the `M` key or `/sound on`.
+  - Footsteps as you scroll and block-breaking sounds that match the layer: grass, dirt, stone, deepslate, netherrack, end stone.
+  - Pigs, sheep, chickens and bats make noises when they are on screen, panned to where they are.
+  - The mix follows the world: rain on the surface (muffled underground), echo and eerie distant noises in the caves, a rumble and portal whoosh in the Nether, and wind in The End.
+  - Soft generative background music in a different scale for day, night, caves, the Nether and The End (`/music off` to mute it).
+  - Note-block pitches on the hotbar, an XP ding per section, level-up chimes, a chest creak in the crafting table, and a teleport warble for `/tp`.
+  - `/playsound <pig|sheep|chicken|bat|xp|chest|teleport|portal|tnt|thunder|note|…>` plays any of them.
 - A **floating voxel island** in the hero built from CSS 3D cubes; drag it to spin.
 - Yellow **splash text** beside the title, an inventory-style skills grid, a title-screen intro, and stone, green and end-stone UI.
 

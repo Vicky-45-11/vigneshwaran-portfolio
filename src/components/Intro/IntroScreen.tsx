@@ -1,6 +1,8 @@
 import { useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { EASE_EDITORIAL } from '../animations/easing';
+import { useGame } from '../World/gameContext';
+import { sfx } from '../World/sound';
 import { personal } from '../../data/portfolio';
 import { useReducedMotion } from '../../hooks/useReducedMotion';
 
@@ -16,6 +18,7 @@ interface IntroScreenProps {
 export function IntroScreen({ onFinish }: IntroScreenProps) {
   const reducedMotion = useReducedMotion();
   const enterRef = useRef<HTMLButtonElement>(null);
+  const { sound, setSound } = useGame();
 
   useEffect(() => {
     const { overflow } = document.body.style;
@@ -91,15 +94,31 @@ export function IntroScreen({ onFinish }: IntroScreenProps) {
         </motion.div>
 
         <motion.div {...rise(0.7)} className="mt-10 flex w-[min(80vw,26rem)] flex-col gap-3">
-          <button ref={enterRef} type="button" onClick={() => onFinish(false)} className="mc-btn mc-btn--green min-h-12 px-8 text-lg">
+          <button
+            ref={enterRef}
+            type="button"
+            onClick={() => {
+              sfx.click();
+              onFinish(false);
+            }}
+            className="mc-btn mc-btn--green min-h-12 px-8 text-lg"
+          >
             Enter Portfolio
+          </button>
+          <button
+            type="button"
+            onClick={() => setSound(!sound)}
+            aria-pressed={sound}
+            className="mc-btn min-h-11 px-6 text-base"
+          >
+            Sound: {sound ? 'ON' : 'OFF'}
           </button>
         </motion.div>
       </div>
 
       <div className="container-editorial relative z-10 flex justify-between pb-6 text-white/60">
         <span className="label-mono">{personal.location}</span>
-        <span className="label-mono hidden sm:inline">Press Esc to skip</span>
+        <span className="label-mono hidden sm:inline">Press M for sound · Esc to skip</span>
       </div>
     </motion.div>
   );
