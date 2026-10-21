@@ -1,6 +1,6 @@
 import { createContext, useContext } from 'react';
 
-export type Weather = 'clear' | 'rain' | 'thunder';
+export type Weather = 'clear' | 'rain' | 'thunder' | 'snow';
 
 export interface GameSettings {
   night: boolean;

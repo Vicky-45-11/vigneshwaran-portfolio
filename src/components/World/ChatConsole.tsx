@@ -37,10 +37,17 @@ const TP_TARGETS: Record<string, string> = {
 
 const HELP = [
   '/tp <about|skills|projects|experience|education|certifications|contact|spawn>',
-  '/theme <dark|light>   /time set <day|night>   /weather <clear|rain|thunder>   /sound <on|off>',
+  '/theme <dark|light>   /time set <day|night>   /weather <clear|rain|thunder|snow>   /sound <on|off>',
   '/playsound <name>   /music <on|off>   (press M to toggle sound)',
   '/whoami   /projects   /skills   /email   /github   /seed   /clear',
 ];
+
+const WEATHER_TEXT: Record<Weather, string> = {
+  clear: 'The sky clears up.',
+  rain: 'It starts to rain.',
+  thunder: 'A thunderstorm rolls in!',
+  snow: 'It begins to snow.',
+};
 
 const YELLOW = '#ffff55';
 const RED = '#ff5555';
@@ -49,13 +56,14 @@ const GRAY = '#aaaaaa';
 let nextId = 1;
 
 export function ChatConsole({ visible }: { visible: boolean }) {
-  const { setNight, setWeather, setSound } = useGame();
+  const { weather, setNight, setWeather, setSound } = useGame();
   const reducedMotion = useReducedMotion();
   const [open, setOpen] = useState(false);
   const [input, setInput] = useState('');
   const [lines, setLines] = useState<Line[]>([]);
   const [now, setNow] = useState(() => Date.now());
   const [welcomed, setWelcomed] = useState(false);
+  const [seenWeather, setSeenWeather] = useState(weather);
   const inputRef = useRef<HTMLInputElement>(null);
   const history = useRef<string[]>([]);
   const historyIndex = useRef(-1);
@@ -69,6 +77,12 @@ export function ChatConsole({ visible }: { visible: boolean }) {
       { id: nextId++, text: `Welcome to ${personal.firstName}'s world!`, color: YELLOW, at: now },
       { id: nextId++, text: 'Press T for commands, M for sound.', color: GRAY, at: now },
     ]);
+  }
+
+  // Announce weather changes in chat, whichever control made them.
+  if (weather !== seenWeather) {
+    setSeenWeather(weather);
+    setLines((prev) => [...prev.slice(-30), { id: nextId++, text: WEATHER_TEXT[weather], color: '#55ffff', at: now }]);
   }
 
   // Old lines fade out like in-game chat; a slow clock is enough for that.
@@ -155,10 +169,10 @@ export function ChatConsole({ visible }: { visible: boolean }) {
       }
       case 'weather': {
         const value = args[0] as Weather | undefined;
-        if (value === 'clear' || value === 'rain' || value === 'thunder') {
+        if (value === 'clear' || value === 'rain' || value === 'thunder' || value === 'snow') {
           setWeather(value);
-          ok(`Changed the weather to ${value}`);
-        } else say('Usage: /weather <clear|rain|thunder>', RED);
+          sfx.pop();
+        } else say('Usage: /weather <clear|rain|thunder|snow>', RED);
         break;
       }
       case 'sound':
