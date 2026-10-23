@@ -119,8 +119,8 @@ export const personal = {
   email: 'sgvigneshwaran.coral@gmail.com',
   phone: '9789391791',
   location: 'Chennai, India',
-  github: 'https://github.com/vignesh45-eng',
-  githubHandle: 'vignesh45-eng',
+  github: 'https://github.com/Vicky-45-11',
+  githubHandle: 'Vicky-45-11',
 } as const;
 
 export const navLinks: NavLink[] = [
