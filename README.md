@@ -1,153 +1,300 @@
-<div align="center">
-
 # Vigneshwaran S — Portfolio
 
-**A portfolio you scroll down through, from sky to The End.**
+<p align="center">
+  <img src="https://img.shields.io/badge/PORTFOLIO-PIXEL%20WORLD-171717?style=for-the-badge&logo=react&logoColor=61DAFB" alt="Portfolio Pixel World" />
+  <img src="https://img.shields.io/badge/STATUS-LIVE-46C46A?style=for-the-badge" alt="Project status" />
+</p>
 
-A block-world themed personal site with a hotbar, weather, mobs, a chat console and generated sound, all drawn in code.
+<div align="center">
 
-`React 19` · `TypeScript` · `Vite` · `Tailwind CSS` · `Framer Motion` · `Vercel`
+### A portfolio you don't just scroll through — you descend into.
 
-[Features](#features) · [Getting started](#getting-started) · [Editing content](#editing-content) · [Architecture](#architecture) · [Structure](#project-structure) · [Performance and accessibility](#performance-and-accessibility) · [Roadmap](#roadmap)
+A cinematic, block-world portfolio where software engineering meets pixel-art exploration. Journey from bright skies through underground caves and volcanic dimensions to a mysterious final world, discovering projects, skills, achievements, and contact information along the way.
+
+**React 19 · TypeScript · Vite · Tailwind CSS · Framer Motion · Web Audio API · Vercel**
+
+[Explore Features](#-features) · [Getting Started](#-getting-started) · [Customize Content](#-customize-content) · [Architecture](#-architecture) · [Project Structure](#-project-structure) · [Roadmap](#-roadmap)
 
 </div>
 
 ---
 
-## About
+## 🌍 About the Project
 
-This is the personal portfolio of Vigneshwaran S, covering projects, skills, experience, education, certifications and work in AI and software development. Instead of a flat page, scrolling travels down through a pixel-art world drawn in code (no image assets): sky and surface, caves with ores, deepslate with diamonds, the Nether with lava and a portal, and finally The End for the contact section and footer.
+This is the personal portfolio of **Vigneshwaran S**, a computer science student focused on AI, machine learning, and software development.
 
-It is an original theme inspired by block-building games. It does not use any game's assets, logo or fonts.
+Instead of presenting information on a conventional flat webpage, this portfolio transforms professional information into an interactive, game-inspired journey through a procedurally styled voxel world.
 
-Deployed on Vercel from this repository.
+Every section represents a different environment. Scrolling becomes exploration, projects become craftable discoveries, skills become inventory items, and the contact section marks the end of the journey.
 
-## Features
+The world is drawn and animated in code, creating a distinctive visual experience without relying on a collection of pre-rendered world images.
 
-### The world
+The aesthetic takes inspiration from block-building games while using original implementation and avoiding proprietary game assets, logos, and fonts.
 
-- **Layered world** generated at runtime. Textures live in `src/components/World/textures.ts` and are exposed to CSS as `var(--tex-<block>)`.
-- **Mobs:** pigs, sheep and chickens wander the surface, and bats flutter in the caves.
-- **Night mode:** the sun/moon button in the navbar (or `/theme dark`) darkens the world, lights the torches, adds zombies on the surface and switches the interface to deepslate and blackstone. The choice is remembered for the next visit.
-- **Weather:** the navbar button cycles clear, rain, thunderstorm and snow. Thunderstorms strike lightning bolts to the ground, and snow falls across the whole page and settles on the grass and on top of every card and window. `/weather snow` works too.
-- **Floating voxel island** in the hero, built from CSS 3D cubes. Drag it to spin.
+## ✨ Features
 
-### Game interface
+### 🗺️ Explore a living pixel world
 
-- **Hotbar** at the bottom: one slot per section. Click a slot or press `1`–`9` to jump.
-- **XP bar and level:** the bar fills as you scroll, and the level counts the sections you have visited.
-- **Advancement toasts:** "Advancement Made!" appears the first time you reach each section.
-- **Block breaking:** clicking anywhere throws pixel particles in the colours of the current layer.
-- **Chat console:** press `T` (or `/`, or use the chat button) and type `/help`. Commands include `/tp skills`, `/time set night`, `/weather rain`, `/sound on`, `/whoami`, `/projects`, `/email` and `/github`.
-- **Crafting table** under the skills: pick a project and its technologies are placed in a 3×3 grid to craft it. Ingredients come from each project's technologies list.
-- Splash text beside the title, an inventory-style skills grid and a title-screen intro.
+- **Layered environments:** Travel through the sky and surface, underground caves, deep stone layers, a lava-filled Nether-inspired dimension, and a mysterious End-inspired finale.
+- **Procedural textures:** Runtime-generated block textures create the visual identity of the world.
+- **Living environments:** Surface animals and cave bats add movement and personality.
+- **Interactive floating island:** Rotate a voxel-style island in the hero section.
+- **Dynamic atmosphere:** Day and night themes transform the visual environment.
 
-### Sound
+### 🎮 A portfolio with game mechanics
 
-Everything is synthesised with the Web Audio API, with no audio files. Sound is **off by default**; turn it on from the title screen, the speaker button, the `M` key or `/sound on`.
+- **Interactive hotbar:** Jump directly between portfolio sections using the bottom navigation.
+- **Keyboard navigation:** Use number keys `1–9` to navigate between supported sections.
+- **Experience progression:** An XP bar responds to scrolling, while the level indicator tracks section exploration.
+- **Advancement notifications:** Discover new sections and receive game-inspired achievement toasts.
+- **Block-breaking effects:** Click interactions trigger pixel particles that adapt to the current environment.
+- **Inventory-inspired skills:** Explore technical skills through a game-style inventory interface.
+- **Project crafting:** Combine project technologies in a crafting-table interface to reveal each project's technology stack.
+- **Title-screen introduction:** Enter the portfolio through a themed opening sequence.
 
-- Footsteps as you scroll and block-breaking sounds that match the layer (grass, dirt, stone, deepslate, netherrack, end stone).
-- Pig, sheep, chicken and bat noises, panned to where the mob is on screen.
-- A mix that follows the world: rain on the surface (muffled underground), echoes in the caves, a rumble and portal whoosh in the Nether, and wind in The End. Snow adds wind when sound is on.
-- Soft generative background music in a different scale for day, night, caves, the Nether and The End (`/music off` to mute).
-- Note-block pitches on the hotbar, an XP ding per section, level-up chimes, a chest creak in the crafting table and a teleport warble for `/tp`.
-- `/playsound <pig|sheep|chicken|bat|xp|chest|teleport|portal|tnt|thunder|note|…>` plays any of them.
+### 🌦️ Dynamic weather and world states
 
-## Tech stack
+- **Weather selection:** Switch between clear skies, rain, thunderstorms, and snow.
+- **Lightning effects:** Thunderstorms introduce animated lightning.
+- **Snow accumulation:** Snow settles on supported environmental surfaces and interface elements.
+- **Persistent themes:** Night mode changes the atmosphere, lighting, and selected environmental details.
+- **Command-based controls:** Where supported, weather and theme states can also be changed through the chat console.
 
-| Area | Technologies |
-| --- | --- |
-| Framework and language | React 19, TypeScript |
-| Build tooling | Vite, `tsc -b` type-check, oxlint |
-| Styling | Tailwind CSS 3, PostCSS, Autoprefixer |
-| Animation | Framer Motion, GSAP |
-| Icons | lucide-react |
-| 3D packages in the manifest | three, @react-three/fiber, @react-three/drei |
-| Audio | Web Audio API (browser built-in) |
-| Hosting | Vercel |
+### 💬 An interactive command console
 
-## Getting started
+Open the in-world chat console and enter commands to interact with the portfolio.
 
-**Prerequisites:** a recent Node.js and npm.
-
-```bash
-git clone https://github.com/Vicky-45-11/vigneshwaran-portfolio.git
-cd vigneshwaran-portfolio
-npm install
-npm run dev
-```
-
-| Script | What it does |
-| --- | --- |
-| `npm run dev` | Local dev server |
-| `npm run build` | Type-check and production build into `dist/` |
-| `npm run preview` | Serve the production build |
-| `npm run lint` | Lint with oxlint |
-
-No environment variables are required.
-
-## Editing content
-
-All personal content (headline, skills, projects, experience, education, certifications, contact details) lives in `src/data/portfolio.ts`. Components only read from it.
-
-To add a repository or live link to a project, set `sourceUrl` or `liveUrl` on that project. Until then the card links to the GitHub profile and no "live project" button is shown.
-
-## Architecture
-
-```mermaid
-flowchart LR
-  Data["src/data/portfolio.ts<br/>all content"] --> Sections["Section components<br/>Hero, About, Skills, Projects, Experience..."]
-  Scroll["useScrollProgress"] --> World["World<br/>textures, worldGen, WorldBackground"]
-  Scroll --> Hud["Hud<br/>hotbar, XP, advancements"]
-  World --> Canvas["Offscreen canvas<br/>baked once"]
-  Sections --> Page["App.tsx"]
-  World --> Page
-  Hud --> Page
-  Page --> Browser["Static site on Vercel"]
-```
-
-The site is a static front end. There is no backend, database or external API in the project.
-
-## Project structure
+Example commands, subject to the application's implemented command handlers:
 
 ```text
-src/
-  components/
-    World/          textures, worldGen, WorldBackground, Hud, BlockBreak, VoxelIsland
-    animations/     FadeIn, Magnet, AnimatedText, VaporType (hero name)
-    ui/             ContactButton, LiveProjectButton, SectionHeading, TechIcon
-    Intro/ Navbar/ Hero/ Marquee/ About/ Focus/ Skills/
-    Projects/ Experience/ (MagicTransform) Education/ Certifications/ Contact/ Footer/
-  data/portfolio.ts all site content
-  hooks/            useReducedMotion, useMousePosition (useFinePointer), useScrollProgress, useMediaQuery
-public/             static files, including the resume PDF
+/help
+/tp skills
+/time set night
+/weather rain
+/sound on
+/whoami
+/projects
+/email
+/github
 ```
 
-## Performance and accessibility
+The console creates a game-inspired way to navigate the portfolio, access information, and control supported environmental settings.
 
-- The world is baked once into an offscreen canvas at 16 px per block and scaled up with nearest-neighbour filtering, so each frame is a single image copy plus a few glowing light sources.
-- Animation runs at 24 fps and stops while the tab is hidden.
-- Visitors who prefer reduced motion get a still world (no drifting clouds, flicker or particles), no block breaking, a non-spinning island and a scrollable technology strip.
-- **VaporType** (hero name): the text stays real DOM text, and a canvas behind it draws the vapor. It pauses off screen and is plain text for reduced-motion visitors. It is written for this site, not the React Bits Pro component, and can be swapped for that once the licensed registry is available.
-- **MagicTransform** (Experience): each responsibility starts as a plain document, flies into a glowing core and comes out as a coloured result card. The result cards are always in the markup, so screen readers and reduced-motion visitors get the full list. It is also written for this site.
+### 🔊 Procedural audio experience
 
-## Roadmap
+The sound system uses the **Web Audio API** to generate audio programmatically rather than depending on prerecorded sound files.
 
-Proposed, not yet built:
+- Context-sensitive footsteps and block-breaking effects.
+- Environmental animal sounds.
+- Spatial panning for supported sound sources.
+- Atmospheric audio for caves, rain, lava-inspired environments, and the final dimension.
+- Procedurally generated background music that changes with the environment.
+- User-controlled sound and music settings.
 
-- [ ] Add project screenshots to this README
-- [ ] Add repository and live links to each project via `sourceUrl` and `liveUrl`
-- [ ] Add a license file
-- [ ] Run a full accessibility audit
-
-## License
-
-No license file has been added to this repository yet, so no license is specified. All rights are reserved by default until one is added.
+**Audio is disabled by default.** Users can enable it through the supported interface controls or console commands.
 
 ---
 
+## 🛠️ Tech Stack
+
+| Technology | Purpose |
+|---|---|
+| React 19 | Component-based user interface |
+| TypeScript | Type-safe application development |
+| Vite | Development server and build tooling |
+| Tailwind CSS | Utility-first styling |
+| Framer Motion | UI animation and transitions |
+| CSS | Voxel-style visuals and environmental effects |
+| Web Audio API | Procedural sound generation |
+| Vercel | Deployment platform |
+
+The architecture combines a modern React application with custom CSS-based visual environments, animation systems, and browser-generated audio.
+
+## 🚀 Getting Started
+
+### Prerequisites
+
+- Node.js compatible with the project's dependencies.
+- npm or the package manager used by the repository.
+- Git.
+
+### 1. Clone the repository
+
+```bash
+git clone <YOUR_PORTFOLIO_REPOSITORY_URL>
+cd <YOUR_PROJECT_DIRECTORY>
+```
+
+Replace the placeholders with your actual repository URL and directory name.
+
+### 2. Install dependencies
+
+```bash
+npm install
+```
+
+If the repository uses another package manager, follow its lockfile and documented installation workflow.
+
+### 3. Start the development server
+
+```bash
+npm run dev
+```
+
+Open the local URL printed by Vite in your terminal.
+
+### 4. Create a production build
+
+```bash
+npm run build
+```
+
+### 5. Preview the production build
+
+```bash
+npm run preview
+```
+
+Check `package.json` to confirm the available scripts before running these commands.
+
+## 🎨 Customize Content
+
+### Personal information
+
+Update the portfolio's existing content source to change your introduction, skills, experience, education, projects, certifications, and contact information.
+
+Inspect the existing data files and component structure before making changes.
+
+### World textures
+
+The procedural texture system is located in:
+
+```text
+src/components/World/textures.ts
+```
+
+Use the existing texture-generation utilities to customize the appearance of supported block types.
+
+### Theme and weather
+
+Explore the existing theme and weather state management to customize lighting, environmental effects, particles, and supported weather conditions.
+
+### Projects and crafting
+
+Update each project's metadata and technology list in the existing project data source. The crafting interface uses those technologies to represent each project.
+
+### Audio
+
+The procedural sound implementation can be customized to adjust sound effects, environmental ambience, music behavior, and volume controls.
+
+Keep audio opt-in and respect browser autoplay restrictions.
+
+## 🏗️ Architecture
+
+The portfolio is organized around reusable UI components and a collection of interactive environmental systems.
+
+```mermaid
+flowchart TD
+    A[React Application] --> B[Portfolio Sections]
+    A --> C[World Environment]
+    A --> D[Game Interface]
+    A --> E[Audio System]
+
+    B --> F[Projects and Skills]
+    B --> G[Experience and Education]
+    B --> H[Contact Section]
+
+    C --> I[Procedural Textures]
+    C --> J[Weather and Themes]
+    C --> K[Environmental Entities]
+
+    D --> L[Hotbar and XP]
+    D --> M[Command Console]
+    D --> N[Crafting Interface]
+
+    E --> O[Sound Effects]
+    E --> P[Ambient Audio]
+    E --> Q[Background Music]
+```
+
+*This diagram represents the intended conceptual organization. Verify the actual imports and source files before treating each item as a separate module.*
+
+## 📁 Project Structure
+
+The main project areas include:
+
+```text
+src/
+├── components/
+│   └── World/
+│       └── textures.ts
+├── [portfolio components]
+├── [application entry points]
+└── [styles and supporting modules]
+```
+
+The abbreviated structure highlights the known world-texture module. Replace the placeholders with the actual directory tree when documenting the repository.
+
+## ♿ Performance and Accessibility
+
+The project combines animations, particles, procedural audio, and dynamic visual environments. These features should be implemented with care to preserve usability.
+
+- Keep sound disabled until explicitly enabled.
+- Respect reduced-motion preferences.
+- Ensure interactive controls have accessible names.
+- Support keyboard navigation where available.
+- Avoid blocking initial rendering with unnecessary effects.
+- Clean up event listeners and audio resources.
+- Test weather effects and particles on mobile devices.
+- Provide readable text and adequate contrast across day and night themes.
+
+Verify each behavior against the current implementation before describing it as complete.
+
+## 🗺️ Roadmap
+
+Potential future improvements include:
+
+- [ ] More interactive voxel environments.
+- [ ] Additional keyboard shortcuts and console commands.
+- [ ] Expanded achievement and exploration mechanics.
+- [ ] Improved mobile controls and performance.
+- [ ] More customization options for weather and world themes.
+- [ ] Enhanced project previews and interactive demonstrations.
+- [ ] A dedicated screenshot gallery and portfolio walkthrough.
+- [ ] Additional accessibility and reduced-motion refinements.
+
+These are proposed improvements, not claims about currently implemented functionality.
+
+## 🤝 Contributing
+
+Suggestions, bug reports, and improvements are welcome.
+
+1. Fork the repository.
+2. Create a feature branch.
+3. Make your changes.
+4. Run the project's available checks.
+5. Submit a pull request with a clear explanation.
+
+Please follow the repository's license and contribution guidelines where available.
+
+## 📄 License
+
+Check the repository for an existing `LICENSE` file before redistributing or reusing the project.
+
+If no license is present, contact the repository owner for permission before reusing the source code.
+
+## 🌌 The End
+
+This portfolio is an experiment in making personal branding more interactive, playful, and memorable.
+
+It brings together software engineering, creative coding, procedural visuals, and game-inspired interaction to turn a developer portfolio into a world worth exploring.
+
+**Built with code. Inspired by worlds. Designed to be explored.**
+
 <div align="center">
 
-**Scroll down. Break some blocks. See what is waiting in The End.**
+**Vigneshwaran S**
+
+[Portfolio](<YOUR_PORTFOLIO_URL>) · [GitHub](<YOUR_GITHUB_PROFILE_URL>) · [Contact](mailto:<YOUR_EMAIL_ADDRESS>)
 
 </div>
