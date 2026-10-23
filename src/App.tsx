@@ -9,6 +9,9 @@ import { TechnicalFocus } from './components/Focus/TechnicalFocus';
 import { Skills } from './components/Skills/Skills';
 import { SkillTree } from './components/Extras/SkillTree';
 import { ResumeChest } from './components/Extras/ResumeChest';
+import { GuidedTour } from './components/Extras/GuidedTour';
+import { SkillMap } from './components/Extras/SkillMap';
+import { FitChecker } from './components/Extras/FitChecker';
 import { Projects } from './components/Projects/Projects';
 import { Experience } from './components/Experience/Experience';
 import { Education } from './components/Education/Education';
@@ -75,6 +78,7 @@ function Portfolio() {
       <SnowOverlay active={weather === 'snow' && !introOpen} />
       <Hud activeSection={activeSection} progress={progress} visible={!introOpen} />
       <ChatConsole visible={!introOpen} />
+      <GuidedTour visible={!introOpen} />
 
       <AnimatePresence custom={introSkipped}>
         {introOpen && <IntroScreen onFinish={finishIntro} />}
@@ -89,11 +93,13 @@ function Portfolio() {
           <TechnicalFocus />
           <Skills />
           <SkillTree />
+          <SkillMap />
           <Projects />
           <Experience />
           <Education />
           <Certifications />
           <ResumeChest />
+          <FitChecker />
           <Contact />
         </main>
         <Footer />

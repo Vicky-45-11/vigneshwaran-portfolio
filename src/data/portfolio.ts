@@ -50,7 +50,14 @@ export interface FocusArea {
   description: string;
 }
 
-export type ProjectVisual = 'ai-text-detector' | 'campus-connect' | 'spotify-clone';
+export type ProjectVisual =
+  | 'ai-text-detector'
+  | 'campus-connect'
+  | 'spotify-clone'
+  | 'geoverse'
+  | 'civiclens-ai'
+  | 'murmur-voice-site'
+  | 'secondlife-ai';
 
 export interface Project {
   id: string;
@@ -271,6 +278,50 @@ export const projects: Project[] = [
       'A responsive music interface featuring browsing, search, playlists, and audio playback controls.',
     technologies: ['HTML5', 'CSS3', 'JavaScript'],
     visual: 'spotify-clone',
+  },
+  {
+    id: 'geoverse',
+    number: '04',
+    title: 'GEOVERSE',
+    category: '3D / WebGL',
+    description:
+      'A real-time 3D Earth experience with an interactive globe, geographical visualizations, a world explorer and cinematic motion design.',
+    technologies: ['React.js', 'Three.js', 'TypeScript'],
+    visual: 'geoverse',
+    sourceUrl: 'https://github.com/Vicky-45-11/geoverse',
+  },
+  {
+    id: 'civiclens-ai',
+    number: '05',
+    title: 'CIVICLENS AI',
+    category: 'AI / Civic Tech',
+    description:
+      'An AI-assisted civic issue reporting platform where residents photograph and pin problems such as potholes, broken streetlights, water leaks and waste, and track them to resolution.',
+    technologies: ['Python', 'PostgreSQL', 'TypeScript'],
+    visual: 'civiclens-ai',
+    sourceUrl: 'https://github.com/Vicky-45-11/civiclens-ai',
+  },
+  {
+    id: 'murmur-voice-site',
+    number: '06',
+    title: 'MURMUR VOICE',
+    category: 'Voice AI',
+    description:
+      'A voice dictation product site that turns speech into clean, polished text in real time, with filler-word cleanup and a try-it-yourself demo.',
+    technologies: ['React.js', 'TypeScript'],
+    visual: 'murmur-voice-site',
+    sourceUrl: 'https://github.com/Vicky-45-11/murmur-voice-site',
+  },
+  {
+    id: 'secondlife-ai',
+    number: '07',
+    title: 'SECONDLIFE AI',
+    category: 'Sustainability / AI',
+    description:
+      'A prototype that helps people decide what to do with old electronics: repair, reuse, refurbish, donate or recycle, with next-life recommendations for each device.',
+    technologies: ['Three.js', 'TypeScript'],
+    visual: 'secondlife-ai',
+    sourceUrl: 'https://github.com/Vicky-45-11/secondlife-ai',
   },
 ];
 
