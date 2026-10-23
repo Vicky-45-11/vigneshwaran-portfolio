@@ -55,7 +55,6 @@ export type ProjectVisual =
   | 'campus-connect'
   | 'spotify-clone'
   | 'geoverse'
-  | 'm340i-atelier'
   | 'civiclens-ai'
   | 'murmur-voice-site'
   | 'secondlife-ai';
@@ -292,19 +291,8 @@ export const projects: Project[] = [
     sourceUrl: 'https://github.com/Vicky-45-11/geoverse',
   },
   {
-    id: 'm340i-atelier',
-    number: '05',
-    title: 'M340I ATELIER',
-    category: '3D Configurator',
-    description:
-      'An immersive 3D configurator for the BMW M340i. Orbit the car, fly to each part and customise it with every change shown on the model. Independent concept, not affiliated with BMW.',
-    technologies: ['React.js', 'Three.js', 'TypeScript'],
-    visual: 'm340i-atelier',
-    sourceUrl: 'https://github.com/Vicky-45-11/m340i-atelier',
-  },
-  {
     id: 'civiclens-ai',
-    number: '06',
+    number: '05',
     title: 'CIVICLENS AI',
     category: 'AI / Civic Tech',
     description:
@@ -315,7 +303,7 @@ export const projects: Project[] = [
   },
   {
     id: 'murmur-voice-site',
-    number: '07',
+    number: '06',
     title: 'MURMUR VOICE',
     category: 'Voice AI',
     description:
@@ -326,7 +314,7 @@ export const projects: Project[] = [
   },
   {
     id: 'secondlife-ai',
-    number: '08',
+    number: '07',
     title: 'SECONDLIFE AI',
     category: 'Sustainability / AI',
     description:

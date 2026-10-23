@@ -7,7 +7,6 @@ import { TextDetectorVisual } from './visuals/TextDetectorVisual';
 import { CampusNetworkVisual } from './visuals/CampusNetworkVisual';
 import { MusicPlayerVisual } from './visuals/MusicPlayerVisual';
 import { GeoVerseVisual } from './visuals/GeoVerseVisual';
-import { ConfiguratorVisual } from './visuals/ConfiguratorVisual';
 import { CivicReportVisual } from './visuals/CivicReportVisual';
 import { VoiceDictationVisual } from './visuals/VoiceDictationVisual';
 import { NextLifeVisual } from './visuals/NextLifeVisual';
@@ -28,10 +27,6 @@ const VISUALS: Record<ProjectVisual, { Component: ComponentType; caption: string
   geoverse: {
     Component: GeoVerseVisual,
     caption: 'Illustration of a rotating globe with place markers taking turns as the focus.',
-  },
-  'm340i-atelier': {
-    Component: ConfiguratorVisual,
-    caption: 'Illustration of a stylised car silhouette whose paint changes with the selected swatch.',
   },
   'civiclens-ai': {
     Component: CivicReportVisual,
