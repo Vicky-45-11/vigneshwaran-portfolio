@@ -6,6 +6,11 @@ import { personal, type Project, type ProjectVisual } from '../../data/portfolio
 import { TextDetectorVisual } from './visuals/TextDetectorVisual';
 import { CampusNetworkVisual } from './visuals/CampusNetworkVisual';
 import { MusicPlayerVisual } from './visuals/MusicPlayerVisual';
+import { GeoVerseVisual } from './visuals/GeoVerseVisual';
+import { ConfiguratorVisual } from './visuals/ConfiguratorVisual';
+import { CivicReportVisual } from './visuals/CivicReportVisual';
+import { VoiceDictationVisual } from './visuals/VoiceDictationVisual';
+import { NextLifeVisual } from './visuals/NextLifeVisual';
 
 const VISUALS: Record<ProjectVisual, { Component: ComponentType; caption: string }> = {
   'ai-text-detector': {
@@ -19,6 +24,26 @@ const VISUALS: Record<ProjectVisual, { Component: ComponentType; caption: string
   'spotify-clone': {
     Component: MusicPlayerVisual,
     caption: 'Illustration of a music interface with search, album grid and playback bar, using original abstract artwork.',
+  },
+  geoverse: {
+    Component: GeoVerseVisual,
+    caption: 'Illustration of a rotating globe with place markers taking turns as the focus.',
+  },
+  'm340i-atelier': {
+    Component: ConfiguratorVisual,
+    caption: 'Illustration of a stylised car silhouette whose paint changes with the selected swatch.',
+  },
+  'civiclens-ai': {
+    Component: CivicReportVisual,
+    caption: 'Illustration of a map with issue pins and a report moving from reported to resolved, using sample data.',
+  },
+  'murmur-voice-site': {
+    Component: VoiceDictationVisual,
+    caption: 'Illustration of a waveform and a transcript with filler words removed.',
+  },
+  'secondlife-ai': {
+    Component: NextLifeVisual,
+    caption: 'Illustration of a device and five next-life routes: repair, reuse, refurbish, donate and recycle.',
   },
 };
 
