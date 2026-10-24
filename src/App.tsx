@@ -10,8 +10,6 @@ import { Skills } from './components/Skills/Skills';
 import { SkillTree } from './components/Extras/SkillTree';
 import { ResumeChest } from './components/Extras/ResumeChest';
 import { GuidedTour } from './components/Extras/GuidedTour';
-import { SkillMap } from './components/Extras/SkillMap';
-import { FitChecker } from './components/Extras/FitChecker';
 import { CommandPalette } from './components/Extras/CommandPalette';
 import { ProjectSpotlight } from './components/Extras/ProjectSpotlight';
 import { ProjectLab } from './components/Extras/ProjectLab';
@@ -98,14 +96,12 @@ function Portfolio() {
           <TechnicalFocus />
           <Skills />
           <SkillTree />
-          <SkillMap />
           <Projects />
           <ProjectLab />
           <ExperienceBuild />
           <EducationBuild />
           <CertificationsRoom />
           <ResumeChest />
-          <FitChecker />
           <Contact />
         </main>
         <Footer />
