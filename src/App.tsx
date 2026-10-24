@@ -18,7 +18,7 @@ import { ProjectLab } from './components/Extras/ProjectLab';
 import { ExperienceBuild } from './components/Experience/ExperienceBuild';
 import { Projects } from './components/Projects/Projects';
 import { EducationBuild } from './components/Education/EducationBuild';
-import { Certifications } from './components/Certifications/Certifications';
+import { CertificationsRoom } from './components/Certifications/CertificationsRoom';
 import { Contact } from './components/Contact/Contact';
 import { Footer } from './components/Footer/Footer';
 import { sectionIds } from './data/portfolio';
@@ -103,7 +103,7 @@ function Portfolio() {
           <ProjectLab />
           <ExperienceBuild />
           <EducationBuild />
-          <Certifications />
+          <CertificationsRoom />
           <ResumeChest />
           <FitChecker />
           <Contact />
