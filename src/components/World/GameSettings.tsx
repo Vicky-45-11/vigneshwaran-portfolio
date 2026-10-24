@@ -4,11 +4,14 @@ import { setSoundEnabled, sfx } from './sound';
 
 const THEME_KEY = 'vs-portfolio-theme';
 
+// First visit: follow the visitor's own clock. After that, their choice wins.
+const clockIsNight = () => { const h = new Date().getHours(); return h >= 19 || h < 6; };
 function savedNight(): boolean {
   try {
-    return window.localStorage.getItem(THEME_KEY) === 'night';
+    const saved = window.localStorage.getItem(THEME_KEY);
+    return saved ? saved === 'night' : clockIsNight();
   } catch {
-    return false;
+    return clockIsNight();
   }
 }
 
