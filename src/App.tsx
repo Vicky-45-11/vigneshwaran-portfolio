@@ -12,8 +12,11 @@ import { ResumeChest } from './components/Extras/ResumeChest';
 import { GuidedTour } from './components/Extras/GuidedTour';
 import { SkillMap } from './components/Extras/SkillMap';
 import { FitChecker } from './components/Extras/FitChecker';
+import { CommandPalette } from './components/Extras/CommandPalette';
+import { ProjectSpotlight } from './components/Extras/ProjectSpotlight';
+import { ProjectLab } from './components/Extras/ProjectLab';
+import { ExperienceBuild } from './components/Experience/ExperienceBuild';
 import { Projects } from './components/Projects/Projects';
-import { Experience } from './components/Experience/Experience';
 import { Education } from './components/Education/Education';
 import { Certifications } from './components/Certifications/Certifications';
 import { Contact } from './components/Contact/Contact';
@@ -79,6 +82,8 @@ function Portfolio() {
       <Hud activeSection={activeSection} progress={progress} visible={!introOpen} />
       <ChatConsole visible={!introOpen} />
       <GuidedTour visible={!introOpen} />
+      <CommandPalette visible={!introOpen} />
+      <ProjectSpotlight />
 
       <AnimatePresence custom={introSkipped}>
         {introOpen && <IntroScreen onFinish={finishIntro} />}
@@ -95,7 +100,8 @@ function Portfolio() {
           <SkillTree />
           <SkillMap />
           <Projects />
-          <Experience />
+          <ProjectLab />
+          <ExperienceBuild />
           <Education />
           <Certifications />
           <ResumeChest />
