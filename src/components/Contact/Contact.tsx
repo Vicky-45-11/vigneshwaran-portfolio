@@ -1,12 +1,12 @@
 import { useState, type ChangeEvent, type FormEvent } from 'react';
-import { ArrowUpRight, Check, Copy, Mail, Phone } from 'lucide-react';
+import { ArrowUpRight, Check, Copy, Loader2, Mail, Phone, Send } from 'lucide-react';
 import { FadeIn } from '../animations/FadeIn';
-import { ContactButton } from '../ui/ContactButton';
 import { GithubIcon } from '../icons/GithubIcon';
 import { personal } from '../../data/portfolio';
 
 type Field = 'name' | 'email' | 'subject' | 'message';
 type FormState = Record<Field, string>;
+type Status = 'idle' | 'sending' | 'sent' | 'error';
 
 const EMPTY: FormState = { name: '', email: '', subject: '', message: '' };
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
@@ -21,15 +21,6 @@ function validate(values: FormState): Partial<Record<Field, string>> {
   return errors;
 }
 
-/** Builds a mailto: URL with every user-supplied value percent-encoded. */
-function buildMailto(values: FormState): string {
-  const subject = encodeURIComponent(values.subject.trim());
-  const body = encodeURIComponent(
-    `${values.message.trim()}\n\n— ${values.name.trim()}\n${values.email.trim()}`,
-  );
-  return `mailto:${personal.email}?subject=${subject}&body=${body}`;
-}
-
 const channels = [
   { label: 'Email', value: personal.email, href: `mailto:${personal.email}`, icon: Mail, external: false },
   { label: 'Phone', value: personal.phone, href: `tel:+91${personal.phone}`, icon: Phone, external: false },
@@ -39,17 +30,21 @@ const channels = [
 export function Contact() {
   const [values, setValues] = useState<FormState>(EMPTY);
   const [errors, setErrors] = useState<Partial<Record<Field, string>>>({});
-  const [opened, setOpened] = useState(false);
+  const [status, setStatus] = useState<Status>('idle');
+  const [serverError, setServerError] = useState('');
+  const [trap, setTrap] = useState('');
   const [copied, setCopied] = useState(false);
 
   const onChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const field = e.target.name as Field;
     setValues((v) => ({ ...v, [field]: e.target.value }));
     if (errors[field]) setErrors((err) => ({ ...err, [field]: undefined }));
+    if (status === 'sent' || status === 'error') setStatus('idle');
   };
 
-  const onSubmit = (e: FormEvent<HTMLFormElement>) => {
+  const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (status === 'sending') return;
     const found = validate(values);
     setErrors(found);
     const firstInvalid = (Object.keys(found) as Field[])[0];
@@ -57,8 +52,26 @@ export function Contact() {
       document.getElementById(`contact-${firstInvalid}`)?.focus();
       return;
     }
-    window.location.href = buildMailto(values);
-    setOpened(true);
+
+    setStatus('sending');
+    setServerError('');
+    try {
+      const res = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ...values, company: trap }),
+      });
+      const data = (await res.json().catch(() => null)) as { ok?: boolean; error?: string } | null;
+      if (!res.ok || !data?.ok) {
+        setServerError(data?.error ?? '');
+        setStatus('error');
+        return;
+      }
+      setValues(EMPTY);
+      setStatus('sent');
+    } catch {
+      setStatus('error');
+    }
   };
 
   const copyEmail = async () => {
@@ -87,6 +100,7 @@ export function Contact() {
           name={field}
           rows={6}
           required
+          maxLength={5000}
           value={values[field]}
           onChange={onChange}
           aria-invalid={Boolean(errors[field])}
@@ -99,6 +113,7 @@ export function Contact() {
           name={field}
           type={type}
           required
+          maxLength={200}
           autoComplete={autoComplete}
           value={values[field]}
           onChange={onChange}
@@ -114,6 +129,8 @@ export function Contact() {
       )}
     </div>
   );
+
+  const sending = status === 'sending';
 
   return (
     <section id="contact" aria-labelledby="contact-title" className="relative overflow-hidden border-t border-line py-24 sm:py-36">
@@ -187,17 +204,50 @@ export function Contact() {
               <div className="sm:col-span-2">{renderField('subject', 'Subject', 'text')}</div>
               {renderField('message', 'Message', 'textarea')}
 
+              {/* Honeypot: hidden from people and assistive tech, bots tend to fill it in. */}
+              <div aria-hidden="true" className="absolute -left-[9999px] h-0 w-0 overflow-hidden">
+                <label htmlFor="contact-company">Company</label>
+                <input
+                  id="contact-company"
+                  name="company"
+                  type="text"
+                  tabIndex={-1}
+                  autoComplete="off"
+                  value={trap}
+                  onChange={(e) => setTrap(e.target.value)}
+                />
+              </div>
+
               <div className="flex flex-col gap-5 sm:col-span-2 sm:flex-row sm:items-center sm:justify-between">
                 <p id="contact-form-note" className="max-w-sm text-sm leading-relaxed text-mist-muted">
-                  This site has no mail server. Submitting opens your email app with the message filled in, ready for you to send.
+                  Your message goes straight to my inbox and I will reply to the email address you enter.
                 </p>
-                <ContactButton type="submit" />
+                <button
+                  type="submit"
+                  disabled={sending}
+                  className="mc-btn mc-btn--green group inline-flex min-h-12 items-center justify-center gap-3 px-7 py-3 text-lg disabled:cursor-wait disabled:opacity-70"
+                >
+                  <span>{sending ? 'SENDING...' : 'SEND MESSAGE'}</span>
+                  {sending ? (
+                    <Loader2 size={18} aria-hidden="true" className="animate-spin" />
+                  ) : (
+                    <Send size={18} aria-hidden="true" className="transition-transform duration-200 group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
+                  )}
+                </button>
               </div>
-              <p className="text-sm text-accent-light sm:col-span-2" aria-live="polite">
-                {opened
-                  ? `Your email app should now be open. If nothing happened, write to ${personal.email} directly.`
-                  : ''}
-              </p>
+              <div className="sm:col-span-2" aria-live="polite" role="status">
+                {status === 'sent' && (
+                  <p className="mc-slot flex items-center gap-2 px-4 py-3 text-sm text-accent-light">
+                    <Check size={16} aria-hidden="true" />
+                    Message sent. Thank you, I will get back to you soon.
+                  </p>
+                )}
+                {status === 'error' && (
+                  <p className="border-[3px] border-red-500 bg-black px-4 py-3 text-sm text-red-300">
+                    {serverError || 'Something went wrong.'} Please try again, or write to {personal.email} directly.
+                  </p>
+                )}
+              </div>
             </form>
           </FadeIn>
         </div>
